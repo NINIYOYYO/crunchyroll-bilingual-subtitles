@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { width: 340px; padding: 15px; font-family: sans-serif; background: #141519; color: white; }
+    h3 { color: #f47521; margin: 0 0 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    .item { margin-bottom: 12px; }
+    label { display: block; font-size: 12px; color: #aaa; margin-bottom: 4px; }
+    select, input { width: 100%; padding: 8px; background: #222; border: 1px solid #444; color: white; border-radius: 4px; box-sizing: border-box; }
+    .ai-config { background: #1c1d22; padding: 10px; border-radius: 4px; margin-top: 10px; border: 1px dashed #444; }
+    .row { display: flex; gap: 10px; }
+    .row .item { flex: 1; }
+    button { width: 100%; padding: 10px; background: #f47521; border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 10px; }
+    button:hover { background: #ff8c3a; }
+    button:disabled { background: #666; cursor: not-allowed; }
+    .status { display: none; margin-top: 10px; padding: 8px; border-radius: 4px; font-size: 12px; text-align: center; }
+    .status.success { background: #1a3a1a; color: #55FF55; border: 1px solid #55FF55; }
+    .status.error { background: #3a1a1a; color: #FF6B6B; border: 1px solid #FF6B6B; }
+  </style>
+</head>
+<body>
+  <h3>双语字幕 Pro (性能版)</h3>
+  <div id="save-status" class="status"></div>
+  
+  <div class="row">
+    <div class="item">
+        <label>目标语言</label>
+        <select id="lang-select">
+        <option value="zh-CN">简体中文</option>
+        <option value="zh-HK">繁体中文</option>
+        <option value="en-US">English</option>
+        </select>
+    </div>
+    <div class="item">
+        <label>获取模式</label>
+        <select id="mode-select">
+        <option value="fallback">无官方则AI</option>
+        <option value="force_ai">强制AI翻译</option>
+        <option value="native">仅限官方</option>
+        </select>
+    </div>
+  </div>
+
+  <div class="item">
+    <label>翻译引擎</label>
+    <select id="engine-select">
+      <option value="google">Google 免费机翻</option>
+      <option value="custom_llm">自定义大模型 (提供上下文)</option>
+    </select>
+  </div>
+
+  <div id="ai-fields" class="ai-config" style="display:none;">
+    <div class="item">
+      <label>API 接口地址</label>
+      <input type="text" id="api-url" placeholder="https://openrouter.ai/api/v1/chat/completions">
+    </div>
+    <div class="row">
+        <div class="item">
+            <label>模型名称</label>
+            <input type="text" id="ai-model" placeholder="moonshotai/kimi-k2.5-0127">
+        </div>
+        <div class="item">
+            <label>API Key</label>
+            <input type="password" id="api-key" placeholder="sk-or-v1-...">
+        </div>
+    </div>
+    
+    <!-- ✨ 新增：推理强度控制 -->
+    <div class="item" style="margin-top: 5px;">
+        <label style="color: #f47521;">思考/推理强度 (针对 Kimi/R1/o3)</label>
+        <select id="reasoning-effort">
+            <option value="none">极低 (闪电响应，禁止思考)</option>
+            <option value="low">低 (限制最多思考一句话)</option>
+            <option value="medium" selected>中 (默认自然思考)</option>
+            <option value="high">高 (深度思考，速度较慢)</option>
+            <option value="ultra">超高 (极限思考，速度极慢)</option>
+        </select>
+    </div>
+
+    <div class="row" style="margin-top: 5px;">
+        <div class="item">
+            <label>每次打包(句)</label>
+            <input type="number" id="batch-size" min="1" max="50" value="10">
+        </div>
+        <div class="item">
+            <label>并发请求</label>
+            <input type="number" id="concurrency" min="1" max="10" value="3">
+        </div>
+    </div>
+  </div>
+
+  <button id="save-btn">保存设置并刷新页面</button>
+  <script src="popup.js"></script>
+</body>
+</html>
