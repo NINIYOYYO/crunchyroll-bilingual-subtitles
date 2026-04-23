@@ -81,17 +81,32 @@ async function initDualSubs(detail, settings) {
     let targetTrack = null;
     let useAI = false;
 
-    const findNativeCrossTrack = async (lang, preferCaptions = false) => {
+    // 跨轨搜索函数
+    const findCrossTrack = async (lang, preferCaptions = false, targetAudioLocale = null) => {
         const versions = data.versions ||[];
-        const originalVersion = versions.find(v => v.original === true) || versions.find(v => v.audio_locale === 'ja-JP');
-        if (!originalVersion || !originalVersion.guid || !url) return null;
+        let targetVersion = null;
         
-        const newUrl = url.replace(/\/v3\/[^\/]+\//, `/v3/${originalVersion.guid}/`);
+        if (targetAudioLocale) {
+            targetVersion = versions.find(v => v.audio_locale === targetAudioLocale);
+        }
+        if (!targetVersion) {
+            targetVersion = versions.find(v => v.original === true) || versions.find(v => v.audio_locale === 'ja-JP');
+        }
+        if (!targetVersion || !targetVersion.guid || !url) return null;
+        
+        const currentGuidMatch = url.match(/\/v3\/([^\/]+)\//);
+        if (currentGuidMatch && currentGuidMatch[1] === targetVersion.guid) {
+            return findTrackInManifest(data, lang, preferCaptions);
+        }
+
+        const newUrl = url.replace(/\/v3\/[^\/]+\//, `/v3/${targetVersion.guid}/`);
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
             const res = await fetch(newUrl, { ...options, signal: controller.signal });
             clearTimeout(timeout);
+            if (!res.ok) return null; // 防止 404 等导致后续崩溃
+            
             const originalData = await res.json();
             
             if (originalData.assetId && originalData.token) {
@@ -102,16 +117,37 @@ async function initDualSubs(detail, settings) {
         } catch (e) { return null; }
     };
 
-    if (transMode === 'force_ai') useAI = true;
-    else {
+    // ==========================================
+    // 第一阶段：寻找【官方中文字幕】 (仅在非强制AI时)
+    // ==========================================
+    if (transMode !== 'force_ai') {
+        // 1. 永远先看【当前所在轨道】有没有中文 (如果用户在看日配，这里通常直接命中)
         targetTrack = findTrackInManifest(data, targetLang, false);
-        if (!targetTrack) targetTrack = await findNativeCrossTrack(targetLang, false);
+        
+        // 2. 如果当前轨道没中文 (比如用户在看英配)，再去跨轨借【日配轨】的官方中字
+        if (!targetTrack) {
+            targetTrack = await findCrossTrack(targetLang, false, 'ja-JP');
+        }
     }
 
+    // ==========================================
+    // 第二阶段：寻找【AI翻译用的英文底本】
+    // (触发条件：没找到官方中字，或者用户选了"仅AI翻译")
+    // ==========================================
     if (!targetTrack && (transMode === 'fallback' || transMode === 'force_ai')) {
         useAI = true;
+        
+        // ✨ 极致防 429 优化：【无论你在什么轨道，只要当前轨道有英文(CC或普通)，直接用它翻译】
+        // 也就是说，如果你在看英配选"仅AI翻译"，它在这步就会直接提取出CC字幕，0次跨轨网络请求，直接通过！
         targetTrack = findTrackInManifest(data, 'en-US', true); 
-        if (!targetTrack) targetTrack = await findNativeCrossTrack('en-US', true);
+
+        // 如果当前轨道非常奇葩地连英文字幕都没有，再尝试去英配轨 / 日配轨找英文底本
+        if (!targetTrack) {
+            targetTrack = await findCrossTrack('en-US', true, 'en-US'); // 尝试英配轨
+        }
+        if (!targetTrack) {
+            targetTrack = await findCrossTrack('en-US', true, 'ja-JP'); // 尝试日配轨
+        }
     }
 
     if (!targetTrack) {
@@ -257,9 +293,6 @@ function setupInPlayerControls(playerContainer, settings) {
     });
 }
 
-// =================================================================
-// ✨ 全自动后台静默预加载推土机引擎 (Continuous Preloader)
-// =================================================================
 function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, settings) {
     let subContainer = document.getElementById('my-cr-dual-sub-container');
     if (!subContainer) {
@@ -289,39 +322,31 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
     const MAX_CONCURRENCY = settings.concurrency || 3;
     let isPreloading = false;
 
-    // ✨ 死循环推土机函数
     const runContinuousPreload = async () => {
         if (!useAI || isPreloading) return;
         isPreloading = true;
 
         while (consecutiveErrors <= 3) {
-            // 每次循环重新获取真正的 currentTime，因为视频一直在走
             const v = document.querySelector('video');
             if (!v) break;
             const actualTime = v.currentTime;
 
-            // 寻找当前进度往后的所有对白
             const currentIndex = parsedSubs.findIndex(sub => sub.end >= actualTime);
-            if (currentIndex === -1) break; // 视频放完了
+            if (currentIndex === -1) break; 
 
             const futureSubs = parsedSubs.slice(currentIndex);
-            
-            // 过滤出“没被翻译过”且“不在请求中”的对白
             const uncachedLines =[...new Set(
                 futureSubs.map(s => s.text.trim()).filter(t => t && !translationCache[t] && !inFlight.has(t))
             )];
 
-            // 如果未来已经没有未翻译的对白了，推土机就去睡觉
             if (uncachedLines.length === 0) break;
 
-            // 掐出并发队列允许的句子数量 (如 3 * 10 = 30 句)
             const targetLines = uncachedLines.slice(0, BATCH_SIZE * MAX_CONCURRENCY);
             const chunks =[];
             for (let i = 0; i < targetLines.length; i += BATCH_SIZE) {
                 chunks.push(targetLines.slice(i, i + BATCH_SIZE));
             }
 
-            // 发起并发请求
             const promises = chunks.map(chunk => {
                 chunk.forEach(t => inFlight.add(t));
                 return fetchAIBatchTranslation(chunk, settings).finally(() => {
@@ -329,10 +354,7 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
                 });
             });
 
-            // 只有当这一批 (30句话) 翻译完存入缓存后，才进入下一次循环去翻译第 31~60 句话！
             await Promise.all(promises);
-
-            // 温柔对待 API，每一大批次翻译完休息 1 秒
             await new Promise(r => setTimeout(r, 1000));
         }
         
@@ -344,7 +366,6 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
         if (settings.secondLang === "none") return;
         const currentTime = video.currentTime;
         
-        // ✨ 只要触发了播放，就唤醒推土机去后台干活
         if (useAI) runContinuousPreload();
 
         const activeSubs = parsedSubs.filter(sub => currentTime >= sub.start && currentTime <= sub.end);
@@ -368,7 +389,6 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
                             return; 
                         }
 
-                        // 如果用户跳转了进度条到推土机还没来得及推的地方，触发紧急抓取
                         if (pendingEmergencyFetch) return;
                         pendingEmergencyFetch = true;
                         
@@ -394,7 +414,6 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
                             pendingEmergencyFetch = false;
                         }
                     } else {
-                        // 命中缓存，零延迟开显示
                         const translatedLines = lines.map(line => translationCache[line]);
                         textElement.innerHTML = translatedLines.join('<br>');
                         textElement.style.setProperty('display', 'inline-block', 'important');
