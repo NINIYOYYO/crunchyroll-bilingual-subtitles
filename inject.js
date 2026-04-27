@@ -1,4 +1,4 @@
-﻿// inject.js
+// inject.js
 // Network interceptor for Crunchyroll subtitle API
 (function() {
     if (window.__CR_DUAL_SUBS_INJECTED__) return;
@@ -15,24 +15,34 @@
 
         let reqUrl = '';
         let reqOptions = {};
+        let reqHeaders = null;
+
         if (typeof args[0] === 'string') {
             reqUrl = args[0];
             reqOptions = args[1] || {};
-        } else if (args[0] && args[0].url) {
-            reqUrl = args[0].url;
+            reqHeaders = reqOptions.headers;
+        } else if (args[0] && typeof args[0] === 'object') {
+            reqUrl = args[0].url || '';
             reqOptions = args[1] || {};
+            reqHeaders = reqOptions.headers || args[0].headers;
         }
 
-        // 核心修复：只提取纯净的 Headers，丢弃 AbortSignal 等导致通信失败的复杂对象
+        // ✨ 核心修复：跳过插件内部发起的跨轨请求，彻底切断无限死循环！
+        if (reqUrl.includes('cr_cross_track=1')) {
+            return response;
+        }
+
         let safeHeaders = {};
-        if (reqOptions.headers) {
+        if (reqHeaders) {
             try {
-                if (typeof reqOptions.headers.forEach === 'function') {
-                    reqOptions.headers.forEach((val, key) => {
+                if (typeof reqHeaders.forEach === 'function') {
+                    reqHeaders.forEach((val, key) => {
                         if (key && val) safeHeaders[key] = val;
                     });
-                } else if (reqOptions.headers instanceof Object) {
-                    safeHeaders = JSON.parse(JSON.stringify(reqOptions.headers));
+                } else if (reqHeaders instanceof Object) {
+                    Object.keys(reqHeaders).forEach(key => {
+                        safeHeaders[key] = reqHeaders[key];
+                    });
                 }
             } catch (e) {
                 console.debug("[CR双语插件] 解析请求头失败", e);
@@ -41,22 +51,18 @@
 
         if (reqUrl && reqUrl.includes('/playback/v3/') && reqUrl.includes('/play')) {
             const retryKey = reqUrl;
-            const backoff = getBackoff(retryKey);
 
             clone.json().then(data => {
-                if (data && data.subtitles) {
-                    // 核心修复：将整个数据序列化为纯字符串，彻底绕过浏览器的克隆限制
+                if (data && (data.subtitles || data.captions)) {
                     const payload = JSON.stringify({
                         url: reqUrl,
                         options: { headers: safeHeaders },
                         data: data
                     });
                     window.dispatchEvent(new CustomEvent("CR_SUBTITLE_DATA", { detail: payload }));
-                    // 成功，重置退避
                     delete retryBackoffs[retryKey];
                 }
             }).catch(e => {
-                // 解析失败忽略，但记录退避
                 updateBackoff(retryKey);
             });
         }
@@ -64,7 +70,6 @@
         return response;
     };
 
-    // 指数退避策略：500ms -> 1s -> 2s -> 4s (max)
     function getBackoff(key) {
         return retryBackoffs[key] || 500;
     }

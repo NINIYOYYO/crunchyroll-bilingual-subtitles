@@ -1,6 +1,6 @@
 // ==========================================
 // Crunchyroll AI 双语字幕 Pro - content.js
-// 包含【全自动静默推土机】后台预加载引擎
+// 包含【防抢占延迟引擎】修复首播崩溃问题
 // ==========================================
 
 const FETCH_TIMEOUT_MS = 15000;
@@ -20,7 +20,6 @@ const DEFAULT_SETTINGS = {
 
 const translationCache = {};
 
-// 1. 注入拦截脚本
 (function injectOnce() {
     if (window.__CR_DUAL_SUBS_INJECTED__) return;
     const script = document.createElement('script');
@@ -30,11 +29,15 @@ const translationCache = {};
     window.__CR_DUAL_SUBS_INJECTED__ = true;
 })();
 
+let lastProcessedUrl = '';
 window.addEventListener("CR_SUBTITLE_DATA", (event) => {
     if (!event.detail) return;
     let detail;
     try { detail = typeof event.detail === 'string' ? JSON.parse(event.detail) : event.detail; } catch (e) { return; }
     if (detail && !detail.url && !detail.data) detail = { url: "", options: {}, data: { subtitles: detail } };
+
+    if (detail.url && detail.url === lastProcessedUrl) return;
+    lastProcessedUrl = detail.url;
 
     chrome.storage.local.get(DEFAULT_SETTINGS, (settings) => {
         if (settings.secondLang !== "none") initDualSubs(detail, settings);
@@ -58,16 +61,16 @@ function findTrackInManifest(data, lang, preferCaptions = false) {
     const fuzzyLang = lang.split('-')[0]; 
     const checkSubtitles = () => {
         if (data.subtitles) {
-            if (data.subtitles[lang]) return { url: data.subtitles[lang].url, format: data.subtitles[lang].format || 'ass' };
-            const subKey = Object.keys(data.subtitles).find(k => k.startsWith(fuzzyLang));
+            if (data.subtitles[lang] && data.subtitles[lang].url) return { url: data.subtitles[lang].url, format: data.subtitles[lang].format || 'ass' };
+            const subKey = Object.keys(data.subtitles).find(k => k.startsWith(fuzzyLang) && data.subtitles[k].url);
             if (subKey) return { url: data.subtitles[subKey].url, format: data.subtitles[subKey].format || 'ass' };
         }
         return null;
     };
     const checkCaptions = () => {
         if (data.captions) {
-            if (data.captions[lang]) return { url: data.captions[lang].url, format: data.captions[lang].format || 'vtt' };
-            const capKey = Object.keys(data.captions).find(k => k.startsWith(fuzzyLang));
+            if (data.captions[lang] && data.captions[lang].url) return { url: data.captions[lang].url, format: data.captions[lang].format || 'vtt' };
+            const capKey = Object.keys(data.captions).find(k => k.startsWith(fuzzyLang) && data.captions[k].url);
             if (capKey) return { url: data.captions[capKey].url, format: data.captions[capKey].format || 'vtt' };
         }
         return null;
@@ -80,15 +83,18 @@ async function initDualSubs(detail, settings) {
     const { url, options, data } = detail;
     let targetTrack = null;
     let useAI = false;
+    let hasWaitedForCrossTrack = false; // ✨ 记录是否已经为防抢占做过延迟
 
-    // 跨轨搜索函数
     const findCrossTrack = async (lang, preferCaptions = false, targetAudioLocale = null) => {
         const versions = data.versions ||[];
         let targetVersion = null;
         
-        if (targetAudioLocale) {
+        if (targetAudioLocale === 'original') {
+            targetVersion = versions.find(v => v.original === true);
+        } else if (targetAudioLocale) {
             targetVersion = versions.find(v => v.audio_locale === targetAudioLocale);
         }
+        
         if (!targetVersion) {
             targetVersion = versions.find(v => v.original === true) || versions.find(v => v.audio_locale === 'ja-JP');
         }
@@ -99,55 +105,49 @@ async function initDualSubs(detail, settings) {
             return findTrackInManifest(data, lang, preferCaptions);
         }
 
+        // ✨ 核心修复：防抢占竞态！如果是首次执行跨轨，强制休眠 2.5 秒，让主视频先稳定加载画面和 Token，避免被顶号
+        if (!hasWaitedForCrossTrack) {
+            hasWaitedForCrossTrack = true;
+            await new Promise(r => setTimeout(r, 2500));
+        }
+
         const newUrl = url.replace(/\/v3\/[^\/]+\//, `/v3/${targetVersion.guid}/`);
+        const fetchUrl = newUrl.includes('?') ? newUrl + '&cr_cross_track=1' : newUrl + '?cr_cross_track=1';
+        
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-            const res = await fetch(newUrl, { ...options, signal: controller.signal });
+            const safeHeaders = new Headers(options.headers || {});
+            
+            const res = await fetch(fetchUrl, { headers: safeHeaders, signal: controller.signal });
             clearTimeout(timeout);
-            if (!res.ok) return null; // 防止 404 等导致后续崩溃
+            if (!res.ok) return null; 
             
             const originalData = await res.json();
-            
+
+            // 阅后即焚，销毁并发后台 Token
             if (originalData.assetId && originalData.token) {
                 const deleteUrl = `https://www.crunchyroll.com/playback/v1/token/${originalData.assetId}/${originalData.token}`;
-                fetch(deleteUrl, { method: 'DELETE', headers: options.headers || {} }).catch(()=>{});
+                fetch(deleteUrl, { method: 'DELETE', headers: safeHeaders }).catch(()=>{});
             }
+
             return findTrackInManifest(originalData, lang, preferCaptions);
         } catch (e) { return null; }
     };
 
-    // ==========================================
-    // 第一阶段：寻找【官方中文字幕】 (仅在非强制AI时)
-    // ==========================================
     if (transMode !== 'force_ai') {
-        // 1. 永远先看【当前所在轨道】有没有中文 (如果用户在看日配，这里通常直接命中)
         targetTrack = findTrackInManifest(data, targetLang, false);
-        
-        // 2. 如果当前轨道没中文 (比如用户在看英配)，再去跨轨借【日配轨】的官方中字
-        if (!targetTrack) {
-            targetTrack = await findCrossTrack(targetLang, false, 'ja-JP');
-        }
+        if (!targetTrack) targetTrack = await findCrossTrack(targetLang, false, 'original'); 
+        if (!targetTrack) targetTrack = await findCrossTrack(targetLang, false, 'ja-JP');
     }
 
-    // ==========================================
-    // 第二阶段：寻找【AI翻译用的英文底本】
-    // (触发条件：没找到官方中字，或者用户选了"仅AI翻译")
-    // ==========================================
     if (!targetTrack && (transMode === 'fallback' || transMode === 'force_ai')) {
         useAI = true;
-        
-        // ✨ 极致防 429 优化：【无论你在什么轨道，只要当前轨道有英文(CC或普通)，直接用它翻译】
-        // 也就是说，如果你在看英配选"仅AI翻译"，它在这步就会直接提取出CC字幕，0次跨轨网络请求，直接通过！
         targetTrack = findTrackInManifest(data, 'en-US', true); 
 
-        // 如果当前轨道非常奇葩地连英文字幕都没有，再尝试去英配轨 / 日配轨找英文底本
-        if (!targetTrack) {
-            targetTrack = await findCrossTrack('en-US', true, 'en-US'); // 尝试英配轨
-        }
-        if (!targetTrack) {
-            targetTrack = await findCrossTrack('en-US', true, 'ja-JP'); // 尝试日配轨
-        }
+        if (!targetTrack) targetTrack = await findCrossTrack('en-US', true, 'en-US'); 
+        if (!targetTrack) targetTrack = await findCrossTrack('en-US', true, 'original'); 
+        if (!targetTrack) targetTrack = await findCrossTrack('en-US', true, 'ja-JP'); 
     }
 
     if (!targetTrack) {
@@ -315,7 +315,6 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
     let currentDisplayedSourceText = "";
     let pendingEmergencyFetch = false;
     
-    // ---------------- 后台队列管家 ----------------
     let activeRequests = 0;
     const inFlight = new Set();
     const BATCH_SIZE = settings.batchSize || 10;
@@ -361,7 +360,6 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
         isPreloading = false;
     };
     
-    // ---------------- 视频更新监听器 ----------------
     video._dualSubListener = async () => {
         if (settings.secondLang === "none") return;
         const currentTime = video.currentTime;

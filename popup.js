@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const aiFields = document.getElementById('ai-fields');
     const engineSelect = document.getElementById('engine-select');
     const saveBtn = document.getElementById('save-btn');
