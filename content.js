@@ -1,5 +1,5 @@
-// ==========================================
-// Crunchyroll AI 双语字幕 Pro - content.js
+﻿// ==========================================
+// Crunchyroll AI Bilingual Subtitles Pro - content.js
 // 包含【防抢占延迟引擎】修复首播崩溃问题
 // ==========================================
 
@@ -151,7 +151,7 @@ async function initDualSubs(detail, settings) {
     }
 
     if (!targetTrack) {
-        showToast(transMode === 'native' ? `未找到官方字幕，AI降级已禁用。` : `解析失败！无官方字幕，也无底本供翻译。`);
+        showToast(transMode === 'native' ? chrome.i18n.getMessage("toast_no_official_subs") : chrome.i18n.getMessage("toast_parse_failed"));
         return;
     }
 
@@ -159,10 +159,10 @@ async function initDualSubs(detail, settings) {
         const response = await fetch(targetTrack.url);
         const subText = await response.text();
         let parsedSubs = targetTrack.format === 'vtt' ? parseVTT(subText) : parseASS(subText);
-        if (parsedSubs.length === 0) return showToast(`未解析出对白！`, true);
+        if (parsedSubs.length === 0) return showToast(chrome.i18n.getMessage("toast_no_dialogue"), true);
         renderSubtitlesOnVideo(parsedSubs, useAI, settings);
-        showToast(`成功加载[${useAI ? 'AI推土机翻译引擎' : '官方跨轨'}]！`, false);
-    } catch (e) { showToast(`字幕文件下载失败。`); }
+        showToast(chrome.i18n.getMessage("toast_loaded"), false);
+    } catch (e) { showToast(chrome.i18n.getMessage("toast_download_failed")); }
 }
 
 let consecutiveErrors = 0;
@@ -175,7 +175,7 @@ async function fetchAIBatchTranslation(linesArray, settings) {
         }, (response) => {
             if (chrome.runtime.lastError) {
                 consecutiveErrors++;
-                resolve(linesArray.map(() => `[通信断开]`));
+                resolve(linesArray.map(() => chrome.i18n.getMessage("toast_connection_lost")));
                 return;
             }
             if (response && response.success) {
@@ -186,8 +186,8 @@ async function fetchAIBatchTranslation(linesArray, settings) {
                 resolve(response.data);
             } else {
                 consecutiveErrors++;
-                showToast(`批量API报错: ${response?.error}`, true);
-                resolve(linesArray.map(() => `[API报错]`));
+                showToast(chrome.i18n.getMessage("toast_api_error"), true);
+                resolve(linesArray.map(() => chrome.i18n.getMessage("toast_translation_missing")));
             }
         });
     });
@@ -250,14 +250,14 @@ function setupInPlayerControls(playerContainer, settings) {
     const wrapper = document.createElement('div');
     wrapper.id = 'cr-inplayer-controls-wrapper';
     wrapper.innerHTML = `
-        <div id="cr-inplayer-btn">⚙️ 样式调节</div>
+        <div id="cr-inplayer-btn">${chrome.i18n.getMessage("style_adjust_btn") || "⚙️ Style Settings"}</div>
         <div id="cr-inplayer-panel">
             <div class="cr-panel-row">
-                <label>字体大小 <span id="cr-val-size">${settings.subSize}px</span></label>
+                <label>${chrome.i18n.getMessage("font_size_label") || "Font Size"} <span id="cr-val-size">${settings.subSize}px</span></label>
                 <input type="range" id="cr-range-size" min="14" max="50" value="${settings.subSize}">
             </div>
             <div class="cr-panel-row">
-                <label>垂直位置 <span id="cr-val-bottom">${settings.subBottom}%</span></label>
+                <label>${chrome.i18n.getMessage("vertical_pos_label") || "Vertical Position"} <span id="cr-val-bottom">${settings.subBottom}%</span></label>
                 <input type="range" id="cr-range-bottom" min="0" max="80" value="${settings.subBottom}">
             </div>
         </div>
@@ -382,7 +382,7 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
                         const isBeingPreloaded = lines.some(line => inFlight.has(line));
                         
                         if (isBeingPreloaded) {
-                            textElement.innerHTML = `<span style="color:#aaa;font-size:16px;">[AI翻译生成中...]</span>`;
+                            textElement.innerHTML = `<span style="color:#aaa;font-size:16px;">${chrome.i18n.getMessage('toast_ai_translating')}</span>`;
                             textElement.style.setProperty('display', 'inline-block', 'important');
                             return; 
                         }
@@ -390,7 +390,7 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
                         if (pendingEmergencyFetch) return;
                         pendingEmergencyFetch = true;
                         
-                        textElement.innerHTML = `<span style="color:#aaa;font-size:16px;">[获取新区域翻译...]</span>`;
+                        textElement.innerHTML = `<span style="color:#aaa;font-size:16px;">${chrome.i18n.getMessage('toast_fetching')}</span>`;
                         textElement.style.setProperty('display', 'inline-block', 'important'); 
                         
                         try {

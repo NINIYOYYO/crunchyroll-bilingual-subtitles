@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -20,90 +20,88 @@
   </style>
 </head>
 <body>
-  <h3>Crunchyroll双语字幕</h3>
+  <h3 id="title"></h3>
   <div id="save-status" class="status"></div>
-  
+
   <div class="row">
     <div class="item">
-        <label>目标语言 (Target Lang)</label>
+        <label id="label-lang"></label>
         <select id="lang-select">
-            <!-- 核心中文 -->
-            <option value="zh-CN">简体中文 (zh-CN)</option>
-            <option value="zh-HK">繁体中文 (zh-HK)</option>
-            <!-- 国际扩展语言 (匹配 CR 官方代码) -->
-            <option value="en-US">English (en-US)</option>
-            <option value="es-419">Español - LA (es-419)</option>
-            <option value="es-ES">Español - ES (es-ES)</option>
-            <option value="pt-BR">Português - BR (pt-BR)</option>
-            <option value="fr-FR">Français (fr-FR)</option>
-            <option value="de-DE">Deutsch (de-DE)</option>
-            <option value="it-IT">Italiano (it-IT)</option>
-            <option value="ru-RU">Русский (ru-RU)</option>
-            <option value="ar-SA">العربية (ar-SA)</option>
-            <option value="vi-VN">Tiếng Việt (vi-VN)</option>
-            <option value="th-TH">ไทย (th-TH)</option>
-            <option value="id-ID">Bahasa Indonesia (id-ID)</option>
-            <option value="ms-MY">Bahasa Melayu (ms-MY)</option>
+            <option value="zh-CN">zh-CN</option>
+            <option value="zh-HK">zh-HK</option>
+            <option value="en-US">en-US</option>
+            <option value="es-419">es-419</option>
+            <option value="es-ES">es-ES</option>
+            <option value="pt-BR">pt-BR</option>
+            <option value="fr-FR">fr-FR</option>
+            <option value="de-DE">de-DE</option>
+            <option value="it-IT">it-IT</option>
+            <option value="ru-RU">ru-RU</option>
+            <option value="ar-SA">ar-SA</option>
+            <option value="vi-VN">vi-VN</option>
+            <option value="th-TH">th-TH</option>
+            <option value="id-ID">id-ID</option>
+            <option value="ms-MY">ms-MY</option>
         </select>
     </div>
     <div class="item">
-        <label>获取模式</label>
+        <label id="label-mode"></label>
         <select id="mode-select">
-        <option value="fallback">无官方则AI</option>
-        <option value="force_ai">强制AI翻译</option>
-        <option value="native">仅限官方</option>
+            <option value="fallback"></option>
+            <option value="force_ai"></option>
+            <option value="native"></option>
         </select>
     </div>
   </div>
 
   <div class="item">
-    <label>翻译引擎</label>
+    <label id="label-engine"></label>
     <select id="engine-select">
-      <option value="google">Google 免费机翻</option>
-      <option value="custom_llm">自定义大模型 (推荐)</option>
+      <option value="google"></option>
+      <option value="custom_llm"></option>
     </select>
   </div>
 
   <div id="ai-fields" class="ai-config" style="display:none;">
     <div class="item">
-      <label>API 接口地址</label>
-      <input type="text" id="api-url" placeholder="https://openrouter.ai/api/v1/chat/completions">
+      <label id="label-api-url"></label>
+      <input type="text" id="api-url" placeholder="">
     </div>
     <div class="row">
         <div class="item">
-            <label>模型名称</label>
-            <input type="text" id="ai-model" placeholder="moonshotai/kimi-k2.5-0127">
+            <label id="label-model"></label>
+            <input type="text" id="ai-model" placeholder="">
         </div>
         <div class="item">
-            <label>API Key</label>
-            <input type="password" id="api-key" placeholder="sk-or-v1-...">
+            <label id="label-api-key"></label>
+            <input type="password" id="api-key" placeholder="">
         </div>
     </div>
-    
+
     <div class="item" style="margin-top: 5px;">
-        <label style="color: #f47521;">思考/推理强度 (针对 Kimi/R1/o3)</label>
+        <label id="label-effort" style="color: #f47521;"></label>
         <select id="reasoning-effort">
-            <option value="none">极低 (闪电响应，禁止思考)</option>
-            <option value="low">低 (限制最多思考一句话)</option>
-            <option value="medium" selected>中 (默认自然思考)</option>
-            <option value="high">高 (深度思考，速度较慢)</option>
-            <option value="ultra">超高 (极限思考，速度极慢)</option>
+            <option value="none"></option>
+            <option value="low"></option>
+            <option value="medium" selected></option>
+            <option value="high"></option>
+            <option value="ultra"></option>
         </select>
     </div>
 
     <div class="row" style="margin-top: 5px;">
         <div class="item">
-            <label>每次打包(句)</label>
+            <label id="label-batch"></label>
             <input type="number" id="batch-size" min="1" max="50" value="10">
         </div>
         <div class="item">
-            <label>并发请求</label>
+            <label id="label-concurrency"></label>
             <input type="number" id="concurrency" min="1" max="10" value="3">
         </div>
     </div>
   </div>
 
-  <button id="save-btn">保存设置并刷新页面</button>
+  <button id="save-btn"></button>
   <script src="popup.js"></script>
 </body>
 </html>

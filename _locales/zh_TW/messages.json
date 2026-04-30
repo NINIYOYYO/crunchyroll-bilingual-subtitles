@@ -1,0 +1,125 @@
+﻿{
+    "effort_medium":  {
+                          "message":  "中 (默認自然推理)"
+                      },
+    "toast_translation_missing":  {
+                                      "message":  "[翻譯缺失]"
+                                  },
+    "mode_fallback":  {
+                          "message":  "官方優先，AI 兜底"
+                      },
+    "batch_size_label":  {
+                             "message":  "每次打包(句)"
+                         },
+    "translation_engine":  {
+                               "message":  "翻譯引擎"
+                           },
+    "reasoning_effort_label":  {
+                                   "message":  "推理力度 (針對 Kimi/R1/o3)"
+                               },
+    "lang_en_us":  {
+                       "message":  "英文 (en-US)"
+                   },
+    "lang_zh_cn":  {
+                       "message":  "簡體中文 (zh-CN)"
+                   },
+    "effort_low":  {
+                       "message":  "低 (限制最多推理一句話)"
+                   },
+    "mode_force_ai":  {
+                          "message":  "強制 AI 翻譯"
+                      },
+    "engine_custom":  {
+                          "message":  "自定義大模型 (推薦)"
+                      },
+    "saving":  {
+                   "message":  "保存中..."
+               },
+    "effort_high":  {
+                        "message":  "高 (深度推理，速度較慢)"
+                    },
+    "save_button":  {
+                        "message":  "保存設置並刷新頁面"
+                    },
+    "target_language":  {
+                            "message":  "目標語言"
+                        },
+    "toast_fetching":  {
+                           "message":  "[獲取新區翻譯...]"
+                       },
+    "effort_ultra":  {
+                         "message":  "超高 (極限推理，速度極慢)"
+                     },
+    "concurrency_label":  {
+                              "message":  "併發請求"
+                          },
+    "model_label":  {
+                        "message":  "模型名稱"
+                    },
+    "saved_refreshing":  {
+                             "message":  "已保存，正在刷新..."
+                         },
+    "toast_ai_translating":  {
+                                 "message":  "[AI翻譯生成中...]"
+                             },
+    "log_network_interceptor_loaded":  {
+                                           "message":  "網絡攔截器已加載"
+                                       },
+    "extension_name":  {
+                           "message":  "Crunchyroll AI 雙語字幕 Pro"
+                       },
+    "lang_zh_hk":  {
+                       "message":  "繁體中文 (zh-HK)"
+                   },
+    "engine_google":  {
+                          "message":  "Google 免費翻譯"
+                      },
+    "api_key_label":  {
+                          "message":  "API Key"
+                      },
+    "effort_none":  {
+                        "message":  "無 (閃電響應，跳過推理)"
+                    },
+    "popup_title":  {
+                        "message":  "Crunchyroll 雙語字幕"
+                    },
+    "mode_native":  {
+                        "message":  "僅官方字幕"
+                    },
+    "api_url_label":  {
+                          "message":  "API 接口地址"
+                      },
+    "translation_mode":  {
+                             "message":  "翻譯模式"
+                         },
+    "toast_parse_failed":  {
+                               "message":  "Parse failed! No official subtitles, no backup for translation."
+                           },
+    "toast_no_official_subs":  {
+                                   "message":  "No official subtitles found, AI fallback disabled."
+                               },
+    "toast_loaded":  {
+                         "message":  "Successfully loaded [ENGINE]!"
+                     },
+    "toast_connection_lost":  {
+                                  "message":  "[Connection lost]"
+                              },
+    "toast_api_error":  {
+                            "message":  "Batch API error: "
+                        },
+    "toast_download_failed":  {
+                                  "message":  "Subtitle file download failed."
+                              },
+    "toast_no_dialogue":  {
+                              "message":  "No dialogue parsed!"
+                          },
+    "style_adjust_btn":  {
+                              "message":  "樣式調節"
+                          },
+    "font_size_label":  {
+                              "message":  "字體大小"
+                          },
+    "vertical_pos_label":  {
+                              "message":  "垂直位置"
+                          }
+}

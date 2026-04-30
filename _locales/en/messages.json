@@ -1,0 +1,197 @@
+﻿{
+    "effort_none":  {
+                        "message":  "None (Lightning response, skip reasoning)"
+                    },
+    "effort_medium":  {
+                          "message":  "Medium (Default natural reasoning)"
+                      },
+    "effort_ultra":  {
+                         "message":  "Ultra (Extreme reasoning, very slow)"
+                     },
+    "log_max_retries_failed":  {
+                                   "message":  "Max retries reached after"
+                               },
+    "toast_ai_translating":  {
+                                 "message":  "[AI translation in progress...]"
+                             },
+    "model_placeholder":  {
+                              "message":  "moonshotai/kimi-k2.5-0127"
+                          },
+    "mode_fallback":  {
+                          "message":  "Official First, AI Fallback"
+                      },
+    "batch_size_label":  {
+                             "message":  "Batch Size (sentences)"
+                         },
+    "translation_engine":  {
+                               "message":  "Translation Engine"
+                           },
+    "lang_ms_my":  {
+                       "message":  "Malay (ms-MY)"
+                   },
+    "lang_id_id":  {
+                       "message":  "Indonesian (id-ID)"
+                   },
+    "lang_en_us":  {
+                       "message":  "English (en-US)"
+                   },
+    "lang_zh_cn":  {
+                       "message":  "Simplified Chinese (zh-CN)"
+                   },
+    "effort_low":  {
+                       "message":  "Low (Limit reasoning to one sentence)"
+                   },
+    "saving":  {
+                   "message":  "Saving..."
+               },
+    "lang_es_es":  {
+                       "message":  "Spanish - ES (es-ES)"
+                   },
+    "concurrency_label":  {
+                              "message":  "Concurrent Requests"
+                          },
+    "api_key_placeholder":  {
+                                "message":  "sk-or-v1-..."
+                            },
+    "log_model_no_json":  {
+                              "message":  "Model did not return valid JSON object containing { }"
+                          },
+    "log_critical_error":  {
+                               "message":  "Critical error HTTP"
+                           },
+    "log_google_translation_failed":  {
+                                          "message":  "Google translation failed, retrying in"
+                                      },
+    "lang_pt_br":  {
+                       "message":  "Portuguese - BR (pt-BR)"
+                   },
+    "log_retry_attempt":  {
+                              "message":  "attempt"
+                          },
+    "log_batch_translation_failed":  {
+                                         "message":  "Batch translation failed"
+                                     },
+    "api_url_placeholder":  {
+                                "message":  "https://openrouter.ai/api/v1/chat/completions"
+                            },
+    "effort_high":  {
+                        "message":  "High (Deep reasoning, slower speed)"
+                    },
+    "save_button":  {
+                        "message":  "Save Settings \u0026 Refresh Page"
+                    },
+    "lang_es_419":  {
+                        "message":  "Spanish - LA (es-419)"
+                    },
+    "log_subtitle_data":  {
+                              "message":  "Subtitle data"
+                          },
+    "lang_it_it":  {
+                       "message":  "Italian (it-IT)"
+                   },
+    "toast_fetching":  {
+                           "message":  "[Fetching regional translation...]"
+                       },
+    "lang_fr_fr":  {
+                       "message":  "French (fr-FR)"
+                   },
+    "lang_th_th":  {
+                       "message":  "Thai (th-TH)"
+                   },
+    "lang_vi_vn":  {
+                       "message":  "Vietnamese (vi-VN)"
+                   },
+    "log_json_parse_failed":  {
+                                  "message":  "JSON extraction failed: Unable to parse model response"
+                              },
+    "toast_translation_missing":  {
+                                      "message":  "[Translation missing]"
+                                  },
+    "mode_force_ai":  {
+                          "message":  "Force AI Translation"
+                      },
+    "lang_ru_ru":  {
+                       "message":  "Russian (ru-RU)"
+                   },
+    "reasoning_effort_label":  {
+                                   "message":  "Reasoning Effort (for Kimi/R1/o3)"
+                               },
+    "lang_ar_sa":  {
+                       "message":  "Arabic (ar-SA)"
+                   },
+    "saved_refreshing":  {
+                             "message":  "Saved! Refreshing..."
+                         },
+    "lang_de_de":  {
+                       "message":  "German (de-DE)"
+                   },
+    "model_label":  {
+                        "message":  "Model Name"
+                    },
+    "log_network_interceptor_loaded":  {
+                                           "message":  "Network interceptor loaded"
+                                       },
+    "extension_name":  {
+                           "message":  "Crunchyroll AI Bilingual Subtitles Pro"
+                       },
+    "lang_zh_hk":  {
+                       "message":  "Traditional Chinese (zh-HK)"
+                   },
+    "engine_google":  {
+                          "message":  "Google Free Translation"
+                      },
+    "api_key_label":  {
+                          "message":  "API Key"
+                      },
+    "target_language":  {
+                            "message":  "Target Language"
+                        },
+    "extension_description":  {
+                                  "message":  "AI-powered bilingual subtitles that bypass CSP restrictions, supporting real-time position and size adjustments in the player."
+                              },
+    "popup_title":  {
+                        "message":  "Crunchyroll Bilingual Subtitles"
+                    },
+    "mode_native":  {
+                        "message":  "Official Only"
+                    },
+    "engine_custom":  {
+                          "message":  "Custom AI Model (Recommended)"
+                      },
+    "translation_mode":  {
+                             "message":  "Translation Mode"
+                         },
+    "api_url_label":  {
+                          "message":  "API Endpoint URL"
+                      },
+    "toast_parse_failed":  {
+                               "message":  "Parse failed! No official subtitles, no backup for translation."
+                           },
+    "toast_no_official_subs":  {
+                                   "message":  "No official subtitles found, AI fallback disabled."
+                               },
+    "toast_loaded":  {
+                         "message":  "Successfully loaded [ENGINE]!"
+                     },
+    "toast_connection_lost":  {
+                                  "message":  "[Connection lost]"
+                              },
+    "toast_api_error":  {
+                            "message":  "Batch API error: "
+                        },
+    "toast_download_failed":  {
+                                  "message":  "Subtitle file download failed."
+                              },
+    "toast_no_dialogue":  {
+                              "message":  "No dialogue parsed!"
+                          },
+    "style_adjust_btn":  {
+                              "message":  "Style Settings"
+                          },
+    "font_size_label":  {
+                              "message":  "Font Size"
+                          },
+    "vertical_pos_label":  {
+                              "message":  "Vertical Position"
+                          }
+}

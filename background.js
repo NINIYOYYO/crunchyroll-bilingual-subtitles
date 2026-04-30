@@ -1,4 +1,4 @@
-// ==========================================
+﻿// ==========================================
 // background.js - 强力抗错位 ID 锚定 + 自动重传版
 // ==========================================
 
@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         handleBatchTranslation(request.lines, request.settings)
             .then(res => sendResponse({ success: true, data: res }))
             .catch(err => {
-                console.error("[CR双语插件] 批量翻译彻底失败:", err);
+                console.error("[CR Bilingual Subtitles] Batch translation failed:", err);
                 sendResponse({ success: false, error: err.message });
             });
         return true; 
@@ -16,7 +16,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 async function handleBatchTranslation(lines, settings) {
     const { secondLang, transEngine, apiUrl, aiModel, apiKey, reasoningEffort } = settings;
-    const MAX_RETRIES = 3; // 最大重试 3 次
+    const MAX_RETRIES = 3; // max retries: 3
 
     if (transEngine === 'custom_llm' && apiUrl) {
         
@@ -79,7 +79,7 @@ CRITICAL RULES:
         if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
 
         // ====================================================
-        // ✨ 大模型 API 自动重试循环
+        // ✨ AI Model API auto-retry loop
         // ====================================================
         let lastError = null;
         for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
@@ -90,24 +90,24 @@ CRITICAL RULES:
                     const errorText = await res.text();
                     const status = res.status;
                     
-                    // 致命错误，直接熔断（Key 错误、接口地址错误、余额不足等）
+                    // Critical error，直接熔断（Key 错误、接口地址错误、余额不足等）
                     if (status === 401 || status === 403 || status === 404 || status === 402) {
-                        throw new Error(`致命错误 HTTP ${status}: ${errorText.substring(0, 40)}`);
+                        throw new Error(`Critical error HTTP ${status}: ${errorText.substring(0, 40)}`);
                     }
                     
-                    // 非致命错误（429 限流、500/502 服务器崩溃），抛出异常交给重试机制
+                    // 非Critical error（429 限流、500/502 服务器崩溃），抛出异常交给重试机制
                     throw new Error(`HTTP ${status}: ${errorText.substring(0, 40)}`);
                 }
                 
                 const data = await res.json();
                 if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-                    throw new Error("接口返回数据格式异常，缺少 choices[0].message");
+                    throw new Error("Interface returned malformed data, missing choices[0].message");
                 }
 
                 let content = data.choices[0].message.content.trim();
                 content = content.replace(/```json/gi, '').replace(/```/g, '').trim();
                 
-                let translatedArray = new Array(lines.length).fill("[翻译缺失]");
+                let translatedArray = new Array(lines.length).fill(chrome.i18n.getMessage("toast_translation_missing") || "[Translation missing]");
                 
                 const first = content.indexOf('{');
                 const last = content.lastIndexOf('}');
@@ -124,16 +124,16 @@ CRITICAL RULES:
                         // 成功解析！直接返回结果，跳出重试循环
                         return translatedArray; 
                     } catch(e) {
-                        throw new Error(`JSON 提取失败: 无法解析模型返回的文本`);
+                        throw new Error(`JSON extraction failed: Unable to parse model response text`);
                     }
                 } else {
-                    throw new Error("大模型未返回包含 { } 的有效 JSON 字典");
+                    throw new Error("Model did not return valid JSON object containing \{ \}");
                 }
 
             } catch (e) {
                 lastError = e;
-                // 如果是致命错误，停止重试
-                if (e.message.includes('致命错误')) throw e; 
+                // 如果是Critical error，停止重试
+                if (e.message.includes('Critical error')) throw e; 
                 
                 // 如果已经达到最大重试次数，抛出最终错误
                 if (attempt === MAX_RETRIES) break;
@@ -142,12 +142,12 @@ CRITICAL RULES:
                 let delay = 1000 * attempt; 
                 if (e.message.includes('429')) delay = 2500 * attempt;
                 
-                console.warn(`[CR双语插件] 大模型请求失败，等待 ${delay}ms 后进行第 ${attempt + 1}/${MAX_RETRIES} 次重试... 报错信息:`, e.message);
+                console.warn(`[CR Bilingual Subtitles] Model request failed, retrying in ${delay}ms 后进行第 ${attempt + 1}/${MAX_RETRIES} attempts... 报错信息:`, e.message);
                 await new Promise(r => setTimeout(r, delay));
             }
         }
         
-        throw new Error(`重试 ${MAX_RETRIES} 次后彻底失败: ${lastError.message}`);
+        throw new Error(`Retried  attempts, failed: ${lastError.message}`);
 
     } else {
         // ====================================================
@@ -175,7 +175,7 @@ CRITICAL RULES:
                     translatedArray = fullTranslatedText.split('\n\n'); 
                 }
                 
-                while (translatedArray.length < lines.length) translatedArray.push("[翻译缺失]");
+                while (translatedArray.length < lines.length) translatedArray.push(chrome.i18n.getMessage("toast_translation_missing") || "[Translation missing]");
                 return translatedArray.slice(0, lines.length);
 
             } catch (e) {
@@ -185,7 +185,7 @@ CRITICAL RULES:
                 let delay = 1500 * attempt;
                 if (e.message.includes('429')) delay = 3000 * attempt; // Google 429 惩罚期更长
                 
-                console.warn(`[CR双语插件] Google翻译失败，等待 ${delay}ms 后进行第 ${attempt + 1}/${MAX_RETRIES} 次重试...`);
+                console.warn(`[CR双语插件] Google翻译失败，等待 ${delay}ms 后进行第 ${attempt + 1}/${MAX_RETRIES} attempts...`);
                 await new Promise(r => setTimeout(r, delay));
             }
         }

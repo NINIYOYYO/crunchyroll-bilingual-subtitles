@@ -1,0 +1,113 @@
+﻿{
+    "effort_medium":  {
+                          "message":  "中 (デフォルト自然推論)"
+                      },
+    "toast_translation_missing":  {
+                                      "message":  "[翻訳なし]"
+                                  },
+    "mode_fallback":  {
+                          "message":  "公式優先、AI フォールバック"
+                      },
+    "batch_size_label":  {
+                             "message":  "バッチサイズ (文)"
+                         },
+    "translation_engine":  {
+                               "message":  "翻訳エンジン"
+                           },
+    "reasoning_effort_label":  {
+                                   "message":  "推論強度 (Kimi/R1/o3用)"
+                               },
+    "lang_en_us":  {
+                       "message":  "英語 (en-US)"
+                   },
+    "lang_zh_cn":  {
+                       "message":  "簡体字中国語 (zh-CN)"
+                   },
+    "effort_low":  {
+                       "message":  "低 (1文まで推論)"
+                   },
+    "mode_force_ai":  {
+                          "message":  "強制 AI 翻訳"
+                      },
+    "engine_custom":  {
+                          "message":  "カスタムAIモデル (推奨)"
+                      },
+    "saving":  {
+                   "message":  "保存中..."
+               },
+    "effort_high":  {
+                        "message":  "高 (深い推論、低速)"
+                    },
+    "save_button":  {
+                        "message":  "設定を保存してページを更新"
+                    },
+    "target_language":  {
+                            "message":  "目標言語"
+                        },
+    "toast_fetching":  {
+                           "message":  "[地域翻訳を取得中...]"
+                       },
+    "effort_ultra":  {
+                         "message":  "超高 (極限推論、非常に低速)"
+                     },
+    "concurrency_label":  {
+                              "message":  "同時リクエスト数"
+                          },
+    "model_label":  {
+                        "message":  "モデル名"
+                    },
+    "saved_refreshing":  {
+                             "message":  "保存しました！更新中..."
+                         },
+    "toast_ai_translating":  {
+                                 "message":  "[AI翻訳生成中...]"
+                             },
+    "extension_name":  {
+                           "message":  "Crunchyroll AI バイリンガル字幕 Pro"
+                       },
+    "lang_zh_hk":  {
+                       "message":  "繁体字中国語 (zh-HK)"
+                   },
+    "engine_google":  {
+                          "message":  "Google 無料翻訳"
+                      },
+    "api_key_label":  {
+                          "message":  "APIキー"
+                      },
+    "effort_none":  {
+                        "message":  "なし (高速応答、推論スキップ)"
+                    },
+    "popup_title":  {
+                        "message":  "Crunchyroll バイリンガル字幕"
+                    },
+    "mode_native":  {
+                        "message":  "公式のみ"
+                    },
+    "api_url_label":  {
+                          "message":  "API エンドポイントURL"
+                      },
+    "translation_mode":  {
+                             "message":  "翻訳モード"
+                         },
+    "toast_parse_failed":  {
+                               "message":  "Parse failed! No official subtitles, no backup for translation."
+                           },
+    "toast_no_official_subs":  {
+                                   "message":  "No official subtitles found, AI fallback disabled."
+                               },
+    "toast_loaded":  {
+                         "message":  "Successfully loaded [ENGINE]!"
+                     },
+    "toast_connection_lost":  {
+                                  "message":  "[Connection lost]"
+                              },
+    "toast_api_error":  {
+                            "message":  "Batch API error: "
+                        },
+    "toast_download_failed":  {
+                                  "message":  "Subtitle file download failed."
+                              },
+    "toast_no_dialogue":  {
+                              "message":  "No dialogue parsed!"
+                          }
+}

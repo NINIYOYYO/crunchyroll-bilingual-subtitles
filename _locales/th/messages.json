@@ -1,0 +1,113 @@
+﻿{
+    "effort_medium":  {
+                          "message":  "ปานกลาง (การอนุมานตามธรรมชาติเริ่มต้น)"
+                      },
+    "toast_translation_missing":  {
+                                      "message":  "[ไม่มีการแปล]"
+                                  },
+    "mode_fallback":  {
+                          "message":  "ทางการก่อน AI สำรอง"
+                      },
+    "batch_size_label":  {
+                             "message":  "ขนาดชุด (ประโยค)"
+                         },
+    "translation_engine":  {
+                               "message":  "เอนจิ้นแปล"
+                           },
+    "reasoning_effort_label":  {
+                                   "message":  "ความพยายามในการอนุมาน (สำหรับ Kimi/R1/o3)"
+                               },
+    "lang_en_us":  {
+                       "message":  "อังกฤษ (en-US)"
+                   },
+    "lang_zh_cn":  {
+                       "message":  "จีนตัวย่อ (zh-CN)"
+                   },
+    "effort_low":  {
+                       "message":  "ต่ำ (จำกัดการอนุมานเพียงหนึ่งประโยค)"
+                   },
+    "mode_force_ai":  {
+                          "message":  "บังคับแปล AI"
+                      },
+    "engine_custom":  {
+                          "message":  "โมเดล AI แบบกำหนดเอง (แนะนำ)"
+                      },
+    "saving":  {
+                   "message":  "กำลังบันทึก..."
+               },
+    "effort_high":  {
+                        "message":  "สูง (การอนุมานเชิงลึก ช้าลง)"
+                    },
+    "save_button":  {
+                        "message":  "บันทึกการตั้งค่าและรีเฟรชหน้า"
+                    },
+    "target_language":  {
+                            "message":  "ภาษาเป้าหมาย"
+                        },
+    "toast_fetching":  {
+                           "message":  "[กำลังดึงการแปลระดับภูมิภาค...]"
+                       },
+    "effort_ultra":  {
+                         "message":  "อัลตร้า (การอนุมานขั้นสุดยอด ช้ามาก)"
+                     },
+    "concurrency_label":  {
+                              "message":  "คำขอพร้อมกัน"
+                          },
+    "model_label":  {
+                        "message":  "ชื่อโมเดล"
+                    },
+    "saved_refreshing":  {
+                             "message":  "บันทึกแล้ว! กำลังรีเฟรช..."
+                         },
+    "toast_ai_translating":  {
+                                 "message":  "[กำลังสร้างการแปล AI...]"
+                             },
+    "extension_name":  {
+                           "message":  "Crunchyroll ซับไตเติ้ลสองภาษา AI Pro"
+                       },
+    "lang_zh_hk":  {
+                       "message":  "จีนตัวเต็ม (zh-HK)"
+                   },
+    "engine_google":  {
+                          "message":  "Google แปลฟรี"
+                      },
+    "api_key_label":  {
+                          "message":  "API Key"
+                      },
+    "effort_none":  {
+                        "message":  "ไม่มี (ตอบสนองเร็วเหมือนฟ้าแลบ ข้ามการอนุมาน)"
+                    },
+    "popup_title":  {
+                        "message":  "Crunchyroll ซับไตเติ้ลสองภาษา"
+                    },
+    "mode_native":  {
+                        "message":  "เฉพาะทางการ"
+                    },
+    "api_url_label":  {
+                          "message":  "URL Endpoint API"
+                      },
+    "translation_mode":  {
+                             "message":  "โหมดการแปล"
+                         },
+    "toast_parse_failed":  {
+                               "message":  "Parse failed! No official subtitles, no backup for translation."
+                           },
+    "toast_no_official_subs":  {
+                                   "message":  "No official subtitles found, AI fallback disabled."
+                               },
+    "toast_loaded":  {
+                         "message":  "Successfully loaded [ENGINE]!"
+                     },
+    "toast_connection_lost":  {
+                                  "message":  "[Connection lost]"
+                              },
+    "toast_api_error":  {
+                            "message":  "Batch API error: "
+                        },
+    "toast_download_failed":  {
+                                  "message":  "Subtitle file download failed."
+                              },
+    "toast_no_dialogue":  {
+                              "message":  "No dialogue parsed!"
+                          }
+}

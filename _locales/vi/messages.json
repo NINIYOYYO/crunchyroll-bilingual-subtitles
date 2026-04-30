@@ -1,0 +1,113 @@
+﻿{
+    "effort_medium":  {
+                          "message":  "Trung bình (Suy luận tự nhiên mặc định)"
+                      },
+    "toast_translation_missing":  {
+                                      "message":  "[Thiếu bản dịch]"
+                                  },
+    "mode_fallback":  {
+                          "message":  "Chính thức trước, AI dự phòng"
+                      },
+    "batch_size_label":  {
+                             "message":  "Kích thước lô (câu)"
+                         },
+    "translation_engine":  {
+                               "message":  "Công cụ dịch"
+                           },
+    "reasoning_effort_label":  {
+                                   "message":  "Nỗ lực suy luận (cho Kimi/R1/o3)"
+                               },
+    "lang_en_us":  {
+                       "message":  "Tiếng Anh (en-US)"
+                   },
+    "lang_zh_cn":  {
+                       "message":  "Tiếng Trung Giản thể (zh-CN)"
+                   },
+    "effort_low":  {
+                       "message":  "Thấp (Giới hạn suy luận trong một câu)"
+                   },
+    "mode_force_ai":  {
+                          "message":  "Buộc dịch AI"
+                      },
+    "engine_custom":  {
+                          "message":  "Mô hình AI Tùy chỉnh (Đề xuất)"
+                      },
+    "saving":  {
+                   "message":  "Đang lưu..."
+               },
+    "effort_high":  {
+                        "message":  "Cao (Suy luận sâu, chậm hơn)"
+                    },
+    "save_button":  {
+                        "message":  "Lưu cài đặt và làm mới trang"
+                    },
+    "target_language":  {
+                            "message":  "Ngôn ngữ mục tiêu"
+                        },
+    "toast_fetching":  {
+                           "message":  "[Đang lấy bản dịch khu vực...]"
+                       },
+    "effort_ultra":  {
+                         "message":  "Cực cao (Suy luận cực đoan, rất chậm)"
+                     },
+    "concurrency_label":  {
+                              "message":  "Yêu cầu đồng thời"
+                          },
+    "model_label":  {
+                        "message":  "Tên mô hình"
+                    },
+    "saved_refreshing":  {
+                             "message":  "Đã lưu! Đang làm mới..."
+                         },
+    "toast_ai_translating":  {
+                                 "message":  "[Đang tạo bản dịch AI...]"
+                             },
+    "extension_name":  {
+                           "message":  "Crunchyroll Phụ đề Song ngữ AI Pro"
+                       },
+    "lang_zh_hk":  {
+                       "message":  "Tiếng Trung Phồn thể (zh-HK)"
+                   },
+    "engine_google":  {
+                          "message":  "Google Dịch Miễn phí"
+                      },
+    "api_key_label":  {
+                          "message":  "API Key"
+                      },
+    "effort_none":  {
+                        "message":  "Không (Phản hồi chớp nhoáng, bỏ qua suy luận)"
+                    },
+    "popup_title":  {
+                        "message":  "Crunchyroll Phụ đề Song ngữ"
+                    },
+    "mode_native":  {
+                        "message":  "Chỉ chính thức"
+                    },
+    "api_url_label":  {
+                          "message":  "URL Endpoint API"
+                      },
+    "translation_mode":  {
+                             "message":  "Chế độ dịch"
+                         },
+    "toast_parse_failed":  {
+                               "message":  "Parse failed! No official subtitles, no backup for translation."
+                           },
+    "toast_no_official_subs":  {
+                                   "message":  "No official subtitles found, AI fallback disabled."
+                               },
+    "toast_loaded":  {
+                         "message":  "Successfully loaded [ENGINE]!"
+                     },
+    "toast_connection_lost":  {
+                                  "message":  "[Connection lost]"
+                              },
+    "toast_api_error":  {
+                            "message":  "Batch API error: "
+                        },
+    "toast_download_failed":  {
+                                  "message":  "Subtitle file download failed."
+                              },
+    "toast_no_dialogue":  {
+                              "message":  "No dialogue parsed!"
+                          }
+}

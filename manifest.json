@@ -1,30 +1,43 @@
-{
-  "manifest_version": 3,
-  "name": "Crunchyroll AI 双语字幕 Pro",
-  "version": "2.0",
-  "description": "突破 CSP 限制的 AI 双语字幕，支持播放器内实时调节位置与大小。",
-  "permissions": ["storage"],
-  "host_permissions": [
-    "<all_urls>"
-  ],
-  "background": {
-    "service_worker": "background.js"
-  },
-  "action": {
-    "default_popup": "popup.html"
-  },
-  "content_scripts":[
-    {
-      "matches": ["*://*.crunchyroll.com/*"],
-      "css": ["content.css"],
-      "js": ["content.js"],
-      "run_at": "document_start"
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources":["inject.js"],
-      "matches": ["*://*.crunchyroll.com/*"]
-    }
-  ]
+﻿{
+    "manifest_version":  3,
+    "name":  "__MSG_extension_name__",
+    "version":  "2.0",
+    "description":  "__MSG_extension_description__",
+    "permissions":  [
+                        "storage"
+                    ],
+    "host_permissions":  [
+                             "\u003call_urls\u003e"
+                         ],
+    "background":  {
+                       "service_worker":  "background.js"
+                   },
+    "action":  {
+                   "default_popup":  "popup.html"
+               },
+    "content_scripts":  [
+                            {
+                                "matches":  [
+                                                "*://*.crunchyroll.com/*"
+                                            ],
+                                "css":  [
+                                            "content.css"
+                                        ],
+                                "js":  [
+                                           "content.js"
+                                       ],
+                                "run_at":  "document_start"
+                            }
+                        ],
+    "web_accessible_resources":  [
+                                     {
+                                         "resources":  [
+                                                           "inject.js"
+                                                       ],
+                                         "matches":  [
+                                                         "*://*.crunchyroll.com/*"
+                                                     ]
+                                     }
+                                 ],
+    "default_locale":  "en"
 }

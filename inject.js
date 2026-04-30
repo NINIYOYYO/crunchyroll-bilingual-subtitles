@@ -1,10 +1,10 @@
-// inject.js
+﻿// inject.js
 // Network interceptor for Crunchyroll subtitle API
 (function() {
     if (window.__CR_DUAL_SUBS_INJECTED__) return;
     window.__CR_DUAL_SUBS_INJECTED__ = true;
 
-    console.log("[CR双语插件] 网络拦截器已挂载");
+    console.log("[CR Bilingual Subtitles] Network interceptor loaded");
 
     const originalFetch = window.fetch;
     const retryBackoffs = {};
@@ -45,7 +45,7 @@
                     });
                 }
             } catch (e) {
-                console.debug("[CR双语插件] 解析请求头失败", e);
+                console.debug("[CR双语插件] Failed to parse request headers", e);
             }
         }
 

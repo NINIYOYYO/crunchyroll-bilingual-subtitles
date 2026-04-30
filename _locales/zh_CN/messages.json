@@ -1,0 +1,197 @@
+﻿{
+    "extension_name":  {
+                           "message":  "Crunchyroll AI 双语字幕 Pro"
+                       },
+    "lang_vi_vn":  {
+                       "message":  "越南语 (vi-VN)"
+                   },
+    "toast_translation_missing":  {
+                                      "message":  "[翻译缺失]"
+                                  },
+    "log_batch_translation_failed":  {
+                                         "message":  "批量翻译失败"
+                                     },
+    "model_placeholder":  {
+                              "message":  "moonshotai/kimi-k2.5-0127"
+                          },
+    "lang_ms_my":  {
+                       "message":  "马来语 (ms-MY)"
+                   },
+    "mode_fallback":  {
+                          "message":  "官方优先，AI 兜底"
+                      },
+    "saving":  {
+                   "message":  "保存中..."
+               },
+    "model_label":  {
+                        "message":  "模型名称"
+                    },
+    "batch_size_label":  {
+                             "message":  "每次打包(句)"
+                         },
+    "translation_engine":  {
+                               "message":  "翻译引擎"
+                           },
+    "api_url_placeholder":  {
+                                "message":  "https://openrouter.ai/api/v1/chat/completions"
+                            },
+    "lang_id_id":  {
+                       "message":  "印度尼西亚语 (id-ID)"
+                   },
+    "lang_en_us":  {
+                       "message":  "英语 (en-US)"
+                   },
+    "log_retry_attempt":  {
+                              "message":  "次尝试"
+                          },
+    "effort_low":  {
+                       "message":  "低 (限制最多推理一句话)"
+                   },
+    "lang_zh_cn":  {
+                       "message":  "简体中文 (zh-CN)"
+                   },
+    "lang_es_es":  {
+                       "message":  "西班牙语 - 西班牙 (es-ES)"
+                   },
+    "concurrency_label":  {
+                              "message":  "并发请求"
+                          },
+    "api_key_placeholder":  {
+                                "message":  "sk-or-v1-..."
+                            },
+    "log_model_no_json":  {
+                              "message":  "大模型未返回包含 { } 的有效 JSON 字典"
+                          },
+    "log_critical_error":  {
+                               "message":  "致命错误 HTTP"
+                           },
+    "log_google_translation_failed":  {
+                                          "message":  "Google 翻译失败，等待"
+                                      },
+    "lang_pt_br":  {
+                       "message":  "葡萄牙语 - 巴西 (pt-BR)"
+                   },
+    "effort_high":  {
+                        "message":  "高 (深度推理，速度较慢)"
+                    },
+    "save_button":  {
+                        "message":  "保存设置并刷新页面"
+                    },
+    "log_json_parse_failed":  {
+                                  "message":  "JSON 提取失败: 无法解析模型返回的字符串"
+                              },
+    "lang_es_419":  {
+                        "message":  "西班牙语 - 拉美 (es-419)"
+                    },
+    "log_subtitle_data":  {
+                              "message":  "字幕数据"
+                          },
+    "lang_it_it":  {
+                       "message":  "意大利语 (it-IT)"
+                   },
+    "toast_fetching":  {
+                           "message":  "[获取新区翻译...]"
+                       },
+    "lang_fr_fr":  {
+                       "message":  "法语 (fr-FR)"
+                   },
+    "lang_th_th":  {
+                       "message":  "泰语 (th-TH)"
+                   },
+    "toast_ai_translating":  {
+                                 "message":  "[AI翻译生成中...]"
+                             },
+    "log_max_retries_failed":  {
+                                   "message":  "重试 次后彻底失败"
+                               },
+    "mode_force_ai":  {
+                          "message":  "强制 AI 翻译"
+                      },
+    "lang_ru_ru":  {
+                       "message":  "俄语 (ru-RU)"
+                   },
+    "reasoning_effort_label":  {
+                                   "message":  "推理力度 (针对 Kimi/R1/o3)"
+                               },
+    "lang_ar_sa":  {
+                       "message":  "阿拉伯语 (ar-SA)"
+                   },
+    "saved_refreshing":  {
+                             "message":  "已保存，正在刷新..."
+                         },
+    "lang_de_de":  {
+                       "message":  "德语 (de-DE)"
+                   },
+    "effort_medium":  {
+                          "message":  "中 (默认自然推理)"
+                      },
+    "log_network_interceptor_loaded":  {
+                                           "message":  "网络拦截器已加载"
+                                       },
+    "effort_ultra":  {
+                         "message":  "超高 (极限推理，速度极慢)"
+                     },
+    "lang_zh_hk":  {
+                       "message":  "繁体中文 (zh-HK)"
+                   },
+    "target_language":  {
+                            "message":  "目标语言"
+                        },
+    "engine_google":  {
+                          "message":  "Google 免费翻译"
+                      },
+    "api_key_label":  {
+                          "message":  "API Key"
+                      },
+    "effort_none":  {
+                        "message":  "无 (闪电响应，跳过推理)"
+                    },
+    "extension_description":  {
+                                  "message":  "突破 CSP 限制的 AI 双语字幕，支持播放器内实时调节位置和大小。"
+                              },
+    "popup_title":  {
+                        "message":  "Crunchyroll 双语字幕"
+                    },
+    "mode_native":  {
+                        "message":  "仅官方字幕"
+                    },
+    "engine_custom":  {
+                          "message":  "自定义大模型 (推荐)"
+                      },
+    "translation_mode":  {
+                             "message":  "翻译模式"
+                         },
+    "api_url_label":  {
+                          "message":  "API 接口地址"
+                      },
+    "toast_parse_failed":  {
+                               "message":  "Parse failed! No official subtitles, no backup for translation."
+                           },
+    "toast_no_official_subs":  {
+                                   "message":  "No official subtitles found, AI fallback disabled."
+                               },
+    "toast_loaded":  {
+                         "message":  "Successfully loaded [ENGINE]!"
+                     },
+    "toast_connection_lost":  {
+                                  "message":  "[Connection lost]"
+                              },
+    "toast_api_error":  {
+                            "message":  "Batch API error: "
+                        },
+    "toast_download_failed":  {
+                                  "message":  "Subtitle file download failed."
+                              },
+    "toast_no_dialogue":  {
+                              "message":  "No dialogue parsed!"
+                          },
+    "style_adjust_btn":  {
+                              "message":  "样式调节"
+                          },
+    "font_size_label":  {
+                              "message":  "字体大小"
+                          },
+    "vertical_pos_label":  {
+                              "message":  "垂直位置"
+                          }
+}

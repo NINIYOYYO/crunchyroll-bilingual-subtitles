@@ -1,0 +1,113 @@
+﻿{
+    "effort_medium":  {
+                          "message":  "Medio (Razonamiento natural predeterminado)"
+                      },
+    "toast_translation_missing":  {
+                                      "message":  "[Traducción faltante]"
+                                  },
+    "mode_fallback":  {
+                          "message":  "Oficial primero, IA fallback"
+                      },
+    "batch_size_label":  {
+                             "message":  "Tamaño de lote (frases)"
+                         },
+    "translation_engine":  {
+                               "message":  "Motor de traducción"
+                           },
+    "reasoning_effort_label":  {
+                                   "message":  "Esfuerzo de razonamiento (para Kimi/R1/o3)"
+                               },
+    "lang_en_us":  {
+                       "message":  "Inglés (en-US)"
+                   },
+    "lang_zh_cn":  {
+                       "message":  "Chino Simplificado (zh-CN)"
+                   },
+    "effort_low":  {
+                       "message":  "Bajo (Limitar razonamiento a una frase)"
+                   },
+    "mode_force_ai":  {
+                          "message":  "Forzar traducción IA"
+                      },
+    "engine_custom":  {
+                          "message":  "Modelo IA Personalizado (Recomendado)"
+                      },
+    "saving":  {
+                   "message":  "Guardando..."
+               },
+    "effort_high":  {
+                        "message":  "Alto (Razonamiento profundo, más lento)"
+                    },
+    "save_button":  {
+                        "message":  "Guardar configuración y actualizar página"
+                    },
+    "target_language":  {
+                            "message":  "Idioma objetivo"
+                        },
+    "toast_fetching":  {
+                           "message":  "[Obteniendo traducción regional...]"
+                       },
+    "effort_ultra":  {
+                         "message":  "Ultra (Razonamiento extremo, muy lento)"
+                     },
+    "concurrency_label":  {
+                              "message":  "Solicitudes concurrentes"
+                          },
+    "model_label":  {
+                        "message":  "Nombre del modelo"
+                    },
+    "saved_refreshing":  {
+                             "message":  "¡Guardado! Actualizando..."
+                         },
+    "toast_ai_translating":  {
+                                 "message":  "[Traducción IA en progreso...]"
+                             },
+    "extension_name":  {
+                           "message":  "Crunchyroll AI Subtítulos Bilingües Pro"
+                       },
+    "lang_zh_hk":  {
+                       "message":  "Chino Tradicional (zh-HK)"
+                   },
+    "engine_google":  {
+                          "message":  "Google Traducción Gratis"
+                      },
+    "api_key_label":  {
+                          "message":  "API Key"
+                      },
+    "effort_none":  {
+                        "message":  "Ninguno (Respuesta rápida, omitir razonamiento)"
+                    },
+    "popup_title":  {
+                        "message":  "Crunchyroll Subtítulos Bilingües"
+                    },
+    "mode_native":  {
+                        "message":  "Solo oficial"
+                    },
+    "api_url_label":  {
+                          "message":  "URL del Endpoint API"
+                      },
+    "translation_mode":  {
+                             "message":  "Modo de traducción"
+                         },
+    "toast_parse_failed":  {
+                               "message":  "Parse failed! No official subtitles, no backup for translation."
+                           },
+    "toast_no_official_subs":  {
+                                   "message":  "No official subtitles found, AI fallback disabled."
+                               },
+    "toast_loaded":  {
+                         "message":  "Successfully loaded [ENGINE]!"
+                     },
+    "toast_connection_lost":  {
+                                  "message":  "[Connection lost]"
+                              },
+    "toast_api_error":  {
+                            "message":  "Batch API error: "
+                        },
+    "toast_download_failed":  {
+                                  "message":  "Subtitle file download failed."
+                              },
+    "toast_no_dialogue":  {
+                              "message":  "No dialogue parsed!"
+                          }
+}
