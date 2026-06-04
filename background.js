@@ -1,4 +1,4 @@
-﻿// ==========================================
+// ==========================================
 // background.js - 强力抗错位 ID 锚定 + 自动重传版
 // ==========================================
 
@@ -115,16 +115,27 @@ CRITICAL RULES:
                 if (first !== -1 && last !== -1 && last > first) {
                     try {
                         const parsedObj = JSON.parse(content.substring(first, last + 1));
+                        let validKeysCount = 0;
+                        
+                        // 严格逐项校验 1-to-1 映射关系
                         for (let i = 0; i < lines.length; i++) {
                             const translatedLine = parsedObj[i] || parsedObj[String(i)];
-                            if (translatedLine) {
+                            if (translatedLine !== undefined && translatedLine !== null && String(translatedLine).trim() !== "") {
                                 translatedArray[i] = translatedLine;
+                                validKeysCount++;
                             }
                         }
-                        // 成功解析！直接返回结果，跳出重试循环
+                        
+                        // 校验：如果任何一个 Key 缺失或值为空，判定为对齐失败，抛出错误触发下一次重试
+                        if (validKeysCount < lines.length) {
+                            throw new Error(`LLM alignment failed: expected ${lines.length} keys, but only matched ${validKeysCount}`);
+                        }
+                        
+                        // 成功解析且完整对齐，直接返回结果，跳出重试循环
                         return translatedArray; 
                     } catch(e) {
-                        throw new Error(`JSON extraction failed: Unable to parse model response text`);
+                        // 如果是我们主动抛出的对齐失败错误，直接向上传递，否则报 JSON 解析错误
+                        throw new Error(e.message.includes('alignment failed') ? e.message : `JSON extraction failed: Unable to parse model response text`);
                     }
                 } else {
                     throw new Error("Model did not return valid JSON object containing \{ \}");
@@ -142,12 +153,12 @@ CRITICAL RULES:
                 let delay = 1000 * attempt; 
                 if (e.message.includes('429')) delay = 2500 * attempt;
                 
-                console.warn(`[CR Bilingual Subtitles] Model request failed, retrying in ${delay}ms 后进行第 ${attempt + 1}/${MAX_RETRIES} attempts... 报错信息:`, e.message);
+                console.warn(`[CR Bilingual Subtitles] Model request failed or misaligned, retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})`, e.message);
                 await new Promise(r => setTimeout(r, delay));
             }
         }
         
-        throw new Error(`Retried  attempts, failed: ${lastError.message}`);
+        throw new Error(`Retried ${MAX_RETRIES} attempts, failed: ${lastError.message}`);
 
     } else {
         // ====================================================
@@ -185,7 +196,7 @@ CRITICAL RULES:
                 let delay = 1500 * attempt;
                 if (e.message.includes('429')) delay = 3000 * attempt; // Google 429 惩罚期更长
                 
-                console.warn(`[CR双语插件] Google翻译失败，等待 ${delay}ms 后进行第 ${attempt + 1}/${MAX_RETRIES} attempts...`);
+                console.warn(`[CR Bilingual Subtitles] Google translation failed, retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
                 await new Promise(r => setTimeout(r, delay));
             }
         }

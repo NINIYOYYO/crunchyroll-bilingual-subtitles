@@ -315,7 +315,6 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
     let currentDisplayedSourceText = "";
     let pendingEmergencyFetch = false;
     
-    let activeRequests = 0;
     const inFlight = new Set();
     const BATCH_SIZE = settings.batchSize || 10;
     const MAX_CONCURRENCY = settings.concurrency || 3;
