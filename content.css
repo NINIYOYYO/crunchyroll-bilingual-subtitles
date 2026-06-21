@@ -4,8 +4,9 @@
 #my-cr-dual-sub-container {
     position: absolute !important;
     bottom: var(--cr-sub-bottom, 10%) !important;
-    top: auto !important;
-    width: 100% !important;
+    top: var(--cr-sub-top, auto) !important;
+    left: var(--cr-sub-left, 0) !important;
+    width: var(--cr-sub-width, 100%) !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -14,7 +15,7 @@
 }
 
 #my-cr-dual-sub-text {
-    background: rgba(0, 0, 0, 0.65) !important;
+    background: var(--cr-sub-bg, rgba(0, 0, 0, 0.65)) !important;
     font-size: var(--cr-sub-size, 26px) !important;
     font-family: 'Lato', 'Noto Sans SC', 'Microsoft YaHei', sans-serif !important;
     font-weight: bold !important;
@@ -25,6 +26,14 @@
     line-height: 1.4 !important;
     display: none;
     max-width: 90vw !important;
+    color: var(--cr-sub-color, inherit) !important;
+    pointer-events: auto !important;
+    cursor: grab !important;
+    user-select: none !important;
+}
+
+#my-cr-dual-sub-text:active {
+    cursor: grabbing !important;
 }
 
 /* 播放器内的设置按钮和面板 */

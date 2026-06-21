@@ -1,113 +1,122 @@
-﻿{
-    "effort_medium":  {
-                          "message":  "Moyen (Raisonnement naturel par défaut)"
-                      },
-    "toast_translation_missing":  {
-                                      "message":  "[Traduction manquante]"
-                                  },
-    "mode_fallback":  {
-                          "message":  "Officiel d abord, IA fallback"
-                      },
-    "batch_size_label":  {
-                             "message":  "Taille de lot (phrases)"
-                         },
-    "translation_engine":  {
-                               "message":  "Moteur de traduction"
-                           },
-    "reasoning_effort_label":  {
-                                   "message":  "Effort de raisonnement (pour Kimi/R1/o3)"
-                               },
-    "lang_en_us":  {
-                       "message":  "Anglais (en-US)"
-                   },
-    "lang_zh_cn":  {
-                       "message":  "Chinois Simplifié (zh-CN)"
-                   },
-    "effort_low":  {
-                       "message":  "Faible (Limiter le raisonnement à une phrase)"
-                   },
-    "mode_force_ai":  {
-                          "message":  "Forcer traduction IA"
-                      },
-    "engine_custom":  {
-                          "message":  "Modèle IA Personnalisé (Recommandé)"
-                      },
-    "saving":  {
-                   "message":  "Enregistrement..."
-               },
-    "effort_high":  {
-                        "message":  "Élevé (Raisonnement profond, plus lent)"
-                    },
-    "save_button":  {
-                        "message":  "Enregistrer les paramètres et actualiser la page"
-                    },
-    "target_language":  {
-                            "message":  "Langue cible"
-                        },
-    "toast_fetching":  {
-                           "message":  "[Récupération de la traduction régionale...]"
-                       },
-    "effort_ultra":  {
-                         "message":  "Ultra (Raisonnement extrême, très lent)"
-                     },
-    "concurrency_label":  {
-                              "message":  "Requêtes concurrentes"
-                          },
-    "model_label":  {
-                        "message":  "Nom du modèle"
-                    },
-    "saved_refreshing":  {
-                             "message":  "Enregistré ! Actualisation..."
-                         },
-    "toast_ai_translating":  {
-                                 "message":  "[Traduction IA en cours...]"
-                             },
-    "extension_name":  {
-                           "message":  "Crunchyroll Sous-titres Bilingues IA Pro"
-                       },
-    "lang_zh_hk":  {
-                       "message":  "Chinois Traditionnel (zh-HK)"
-                   },
-    "engine_google":  {
-                          "message":  "Google Traduction Gratuit"
-                      },
-    "api_key_label":  {
-                          "message":  "Clé API"
-                      },
-    "effort_none":  {
-                        "message":  "Aucun (Réponse rapide, ignorer le raisonnement)"
-                    },
-    "popup_title":  {
-                        "message":  "Crunchyroll Sous-titres Bilingues"
-                    },
-    "mode_native":  {
-                        "message":  "Officiel uniquement"
-                    },
-    "api_url_label":  {
-                          "message":  "URL du point de terminaison API"
-                      },
-    "translation_mode":  {
-                             "message":  "Mode de traduction"
-                         },
-    "toast_parse_failed":  {
-                               "message":  "Parse failed! No official subtitles, no backup for translation."
-                           },
-    "toast_no_official_subs":  {
-                                   "message":  "No official subtitles found, AI fallback disabled."
-                               },
-    "toast_loaded":  {
-                         "message":  "Successfully loaded [ENGINE]!"
-                     },
-    "toast_connection_lost":  {
-                                  "message":  "[Connection lost]"
-                              },
-    "toast_api_error":  {
-                            "message":  "Batch API error: "
-                        },
-    "toast_download_failed":  {
-                                  "message":  "Subtitle file download failed."
-                              },
-    "toast_no_dialogue":  {
-                              "message":  "No dialogue parsed!"
-                          }
+{
+    "effort_medium": {
+        "message": "Moyen (Raisonnement naturel par défaut)"
+    },
+    "toast_translation_missing": {
+        "message": "[Traduction manquante]"
+    },
+    "mode_fallback": {
+        "message": "Officiel d abord, IA fallback"
+    },
+    "batch_size_label": {
+        "message": "Taille de lot (phrases)"
+    },
+    "translation_engine": {
+        "message": "Moteur de traduction"
+    },
+    "reasoning_effort_label": {
+        "message": "Effort de raisonnement (pour Kimi/R1/o3)"
+    },
+    "lang_en_us": {
+        "message": "Anglais (en-US)"
+    },
+    "lang_zh_cn": {
+        "message": "Chinois Simplifié (zh-CN)"
+    },
+    "effort_low": {
+        "message": "Faible (Limiter le raisonnement à une phrase)"
+    },
+    "mode_force_ai": {
+        "message": "Forcer traduction IA"
+    },
+    "engine_custom": {
+        "message": "Modèle IA Personnalisé (Recommandé)"
+    },
+    "saving": {
+        "message": "Enregistrement..."
+    },
+    "effort_high": {
+        "message": "Élevé (Raisonnement profond, plus lent)"
+    },
+    "save_button": {
+        "message": "Enregistrer les paramètres et actualiser la page"
+    },
+    "target_language": {
+        "message": "Langue cible"
+    },
+    "toast_fetching": {
+        "message": "[Récupération de la traduction régionale...]"
+    },
+    "effort_ultra": {
+        "message": "Ultra (Raisonnement extrême, très lent)"
+    },
+    "concurrency_label": {
+        "message": "Requêtes concurrentes"
+    },
+    "model_label": {
+        "message": "Nom du modèle"
+    },
+    "saved_refreshing": {
+        "message": "Enregistré ! Actualisation..."
+    },
+    "toast_ai_translating": {
+        "message": "[Traduction IA en cours...]"
+    },
+    "extension_name": {
+        "message": "Crunchyroll Sous-titres Bilingues IA Pro"
+    },
+    "lang_zh_hk": {
+        "message": "Chinois Traditionnel (zh-HK)"
+    },
+    "engine_google": {
+        "message": "Google Traduction Gratuit"
+    },
+    "api_key_label": {
+        "message": "Clé API"
+    },
+    "effort_none": {
+        "message": "Aucun (Réponse rapide, ignorer le raisonnement)"
+    },
+    "popup_title": {
+        "message": "Crunchyroll Sous-titres Bilingues"
+    },
+    "mode_native": {
+        "message": "Officiel uniquement"
+    },
+    "api_url_label": {
+        "message": "URL du point de terminaison API"
+    },
+    "translation_mode": {
+        "message": "Mode de traduction"
+    },
+    "toast_parse_failed": {
+        "message": "Parse failed! No official subtitles, no backup for translation."
+    },
+    "toast_no_official_subs": {
+        "message": "No official subtitles found, AI fallback disabled."
+    },
+    "toast_loaded": {
+        "message": "Successfully loaded [ENGINE]!"
+    },
+    "toast_connection_lost": {
+        "message": "[Connection lost]"
+    },
+    "toast_api_error": {
+        "message": "Batch API error: "
+    },
+    "toast_download_failed": {
+        "message": "Subtitle file download failed."
+    },
+    "toast_no_dialogue": {
+        "message": "No dialogue parsed!"
+    },
+    "font_color_label": {
+        "message": "Font Color"
+    },
+    "bg_opacity_label": {
+        "message": "Background Opacity"
+    },
+    "reset_style_btn": {
+        "message": "Reset Style & Pos"
+    }
 }

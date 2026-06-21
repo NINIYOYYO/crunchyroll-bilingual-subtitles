@@ -1,113 +1,122 @@
-﻿{
-    "effort_medium":  {
-                          "message":  "중간 (기본 자연 추론)"
-                      },
-    "toast_translation_missing":  {
-                                      "message":  "[번역 없음]"
-                                  },
-    "mode_fallback":  {
-                          "message":  "공식 우선, AI 백업"
-                      },
-    "batch_size_label":  {
-                             "message":  "배치 크기 (문장)"
-                         },
-    "translation_engine":  {
-                               "message":  "번역 엔진"
-                           },
-    "reasoning_effort_label":  {
-                                   "message":  "추론 강도 (Kimi/R1/o3용)"
-                               },
-    "lang_en_us":  {
-                       "message":  "영어 (en-US)"
-                   },
-    "lang_zh_cn":  {
-                       "message":  "간체 중국어 (zh-CN)"
-                   },
-    "effort_low":  {
-                       "message":  "낮음 (한 문장만 추론)"
-                   },
-    "mode_force_ai":  {
-                          "message":  "강제 AI 번역"
-                      },
-    "engine_custom":  {
-                          "message":  "사용자 정의 AI 모델 (권장)"
-                      },
-    "saving":  {
-                   "message":  "저장 중..."
-               },
-    "effort_high":  {
-                        "message":  "높음 (심층 추론, 속도 느림)"
-                    },
-    "save_button":  {
-                        "message":  "설정 저장 및 페이지 새로고침"
-                    },
-    "target_language":  {
-                            "message":  "대상 언어"
-                        },
-    "toast_fetching":  {
-                           "message":  "[지역 번역 가져오는 중...]"
-                       },
-    "effort_ultra":  {
-                         "message":  "초고 (극한 추론, 매우 느림)"
-                     },
-    "concurrency_label":  {
-                              "message":  "동시 요청"
-                          },
-    "model_label":  {
-                        "message":  "모델 이름"
-                    },
-    "saved_refreshing":  {
-                             "message":  "저장됨! 새로고침 중..."
-                         },
-    "toast_ai_translating":  {
-                                 "message":  "[AI 번역 생성 중...]"
-                             },
-    "extension_name":  {
-                           "message":  "Crunchyroll AI 이중 자막 Pro"
-                       },
-    "lang_zh_hk":  {
-                       "message":  "번체 중국어 (zh-HK)"
-                   },
-    "engine_google":  {
-                          "message":  "Google 무료 번역"
-                      },
-    "api_key_label":  {
-                          "message":  "API 키"
-                      },
-    "effort_none":  {
-                        "message":  "없음 (번개 응답, 추론 건너뛰기)"
-                    },
-    "popup_title":  {
-                        "message":  "Crunchyroll 이중 자막"
-                    },
-    "mode_native":  {
-                        "message":  "공식만"
-                    },
-    "api_url_label":  {
-                          "message":  "API 엔드포인트 URL"
-                      },
-    "translation_mode":  {
-                             "message":  "번역 모드"
-                         },
-    "toast_parse_failed":  {
-                               "message":  "Parse failed! No official subtitles, no backup for translation."
-                           },
-    "toast_no_official_subs":  {
-                                   "message":  "No official subtitles found, AI fallback disabled."
-                               },
-    "toast_loaded":  {
-                         "message":  "Successfully loaded [ENGINE]!"
-                     },
-    "toast_connection_lost":  {
-                                  "message":  "[Connection lost]"
-                              },
-    "toast_api_error":  {
-                            "message":  "Batch API error: "
-                        },
-    "toast_download_failed":  {
-                                  "message":  "Subtitle file download failed."
-                              },
-    "toast_no_dialogue":  {
-                              "message":  "No dialogue parsed!"
-                          }
+{
+    "effort_medium": {
+        "message": "중간 (기본 자연 추론)"
+    },
+    "toast_translation_missing": {
+        "message": "[번역 없음]"
+    },
+    "mode_fallback": {
+        "message": "공식 우선, AI 백업"
+    },
+    "batch_size_label": {
+        "message": "배치 크기 (문장)"
+    },
+    "translation_engine": {
+        "message": "번역 엔진"
+    },
+    "reasoning_effort_label": {
+        "message": "추론 강도 (Kimi/R1/o3용)"
+    },
+    "lang_en_us": {
+        "message": "영어 (en-US)"
+    },
+    "lang_zh_cn": {
+        "message": "간체 중국어 (zh-CN)"
+    },
+    "effort_low": {
+        "message": "낮음 (한 문장만 추론)"
+    },
+    "mode_force_ai": {
+        "message": "강제 AI 번역"
+    },
+    "engine_custom": {
+        "message": "사용자 정의 AI 모델 (권장)"
+    },
+    "saving": {
+        "message": "저장 중..."
+    },
+    "effort_high": {
+        "message": "높음 (심층 추론, 속도 느림)"
+    },
+    "save_button": {
+        "message": "설정 저장 및 페이지 새로고침"
+    },
+    "target_language": {
+        "message": "대상 언어"
+    },
+    "toast_fetching": {
+        "message": "[지역 번역 가져오는 중...]"
+    },
+    "effort_ultra": {
+        "message": "초고 (극한 추론, 매우 느림)"
+    },
+    "concurrency_label": {
+        "message": "동시 요청"
+    },
+    "model_label": {
+        "message": "모델 이름"
+    },
+    "saved_refreshing": {
+        "message": "저장됨! 새로고침 중..."
+    },
+    "toast_ai_translating": {
+        "message": "[AI 번역 생성 중...]"
+    },
+    "extension_name": {
+        "message": "Crunchyroll AI 이중 자막 Pro"
+    },
+    "lang_zh_hk": {
+        "message": "번체 중국어 (zh-HK)"
+    },
+    "engine_google": {
+        "message": "Google 무료 번역"
+    },
+    "api_key_label": {
+        "message": "API 키"
+    },
+    "effort_none": {
+        "message": "없음 (번개 응답, 추론 건너뛰기)"
+    },
+    "popup_title": {
+        "message": "Crunchyroll 이중 자막"
+    },
+    "mode_native": {
+        "message": "공식만"
+    },
+    "api_url_label": {
+        "message": "API 엔드포인트 URL"
+    },
+    "translation_mode": {
+        "message": "번역 모드"
+    },
+    "toast_parse_failed": {
+        "message": "Parse failed! No official subtitles, no backup for translation."
+    },
+    "toast_no_official_subs": {
+        "message": "No official subtitles found, AI fallback disabled."
+    },
+    "toast_loaded": {
+        "message": "Successfully loaded [ENGINE]!"
+    },
+    "toast_connection_lost": {
+        "message": "[Connection lost]"
+    },
+    "toast_api_error": {
+        "message": "Batch API error: "
+    },
+    "toast_download_failed": {
+        "message": "Subtitle file download failed."
+    },
+    "toast_no_dialogue": {
+        "message": "No dialogue parsed!"
+    },
+    "font_color_label": {
+        "message": "Font Color"
+    },
+    "bg_opacity_label": {
+        "message": "Background Opacity"
+    },
+    "reset_style_btn": {
+        "message": "Reset Style & Pos"
+    }
 }

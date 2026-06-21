@@ -1,4 +1,4 @@
-﻿// ==========================================
+// ==========================================
 // Crunchyroll AI Bilingual Subtitles Pro - content.js
 // 包含【防抢占延迟引擎】修复首播崩溃问题
 // ==========================================
@@ -15,7 +15,12 @@ const DEFAULT_SETTINGS = {
     subBottom: 10, 
     batchSize: 10, 
     concurrency: 3,
-    reasoningEffort: "medium"
+    reasoningEffort: "medium",
+    subColor: "",
+    subBgOpacity: 65,
+    subTop: "auto",
+    subLeft: "0",
+    subWidth: "100%"
 };
 
 const translationCache = {};
@@ -258,7 +263,18 @@ function setupInPlayerControls(playerContainer, settings) {
             </div>
             <div class="cr-panel-row">
                 <label>${chrome.i18n.getMessage("vertical_pos_label") || "Vertical Position"} <span id="cr-val-bottom">${settings.subBottom}%</span></label>
-                <input type="range" id="cr-range-bottom" min="0" max="80" value="${settings.subBottom}">
+                <input type="range" id="cr-range-bottom" min="0" max="100" value="${settings.subBottom}">
+            </div>
+            <div class="cr-panel-row" style="display:flex; justify-content:space-between; align-items:center;">
+                <label style="margin:0; font-size:13px; color:#ccc;">${chrome.i18n.getMessage("font_color_label") || "Font Color"}</label>
+                <input type="color" id="cr-color-picker" value="${settings.subColor || '#ffffff'}">
+            </div>
+            <div class="cr-panel-row">
+                <label>${chrome.i18n.getMessage("bg_opacity_label") || "Background Opacity"} <span id="cr-val-opacity">${settings.subBgOpacity}%</span></label>
+                <input type="range" id="cr-range-opacity" min="0" max="100" value="${settings.subBgOpacity}">
+            </div>
+            <div class="cr-panel-row">
+                <button id="cr-reset-pos" style="width:100%; padding:6px; background:#f47521; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">${chrome.i18n.getMessage("reset_style_btn") || "Reset Style & Pos"}</button>
             </div>
         </div>
     `;
@@ -270,11 +286,25 @@ function setupInPlayerControls(playerContainer, settings) {
     const rangeBottom = document.getElementById('cr-range-bottom');
     const valSize = document.getElementById('cr-val-size');
     const valBottom = document.getElementById('cr-val-bottom');
+    const colorPicker = document.getElementById('cr-color-picker');
+    const rangeOpacity = document.getElementById('cr-range-opacity');
+    const valOpacity = document.getElementById('cr-val-opacity');
+    const resetBtn = document.getElementById('cr-reset-pos');
+    
     const subContainer = document.getElementById('my-cr-dual-sub-container');
     const subText = document.getElementById('my-cr-dual-sub-text');
 
-    if (subContainer) subContainer.style.setProperty('--cr-sub-bottom', `${settings.subBottom}%`);
-    if (subText) subText.style.setProperty('--cr-sub-size', `${settings.subSize}px`);
+    if (subContainer) {
+        subContainer.style.setProperty('--cr-sub-bottom', settings.subBottom !== 'auto' ? `${settings.subBottom}%` : 'auto');
+        subContainer.style.setProperty('--cr-sub-top', settings.subTop);
+        subContainer.style.setProperty('--cr-sub-left', settings.subLeft);
+        subContainer.style.setProperty('--cr-sub-width', settings.subWidth);
+    }
+    if (subText) {
+        subText.style.setProperty('--cr-sub-size', `${settings.subSize}px`);
+        if (settings.subColor) subText.style.setProperty('--cr-sub-color', settings.subColor);
+        subText.style.setProperty('--cr-sub-bg', `rgba(0, 0, 0, ${settings.subBgOpacity / 100})`);
+    }
 
     btn.addEventListener('click', () => { panel.style.display = panel.style.display === 'block' ? 'none' : 'block'; });
 
@@ -288,8 +318,49 @@ function setupInPlayerControls(playerContainer, settings) {
     rangeBottom.addEventListener('input', (e) => {
         const v = e.target.value;
         valBottom.innerText = `${v}%`;
-        if (subContainer) subContainer.style.setProperty('--cr-sub-bottom', `${v}%`);
-        chrome.storage.local.set({ subBottom: v });
+        if (subContainer) {
+            subContainer.style.setProperty('--cr-sub-bottom', `${v}%`);
+            subContainer.style.setProperty('--cr-sub-top', 'auto');
+            subContainer.style.setProperty('--cr-sub-left', '0');
+            subContainer.style.setProperty('--cr-sub-width', '100%');
+        }
+        chrome.storage.local.set({ subBottom: v, subTop: 'auto', subLeft: '0', subWidth: '100%' });
+    });
+
+    colorPicker.addEventListener('input', (e) => {
+        const v = e.target.value;
+        if (subText) subText.style.setProperty('--cr-sub-color', v);
+        chrome.storage.local.set({ subColor: v });
+    });
+
+    rangeOpacity.addEventListener('input', (e) => {
+        const v = e.target.value;
+        valOpacity.innerText = `${v}%`;
+        if (subText) subText.style.setProperty('--cr-sub-bg', `rgba(0, 0, 0, ${v / 100})`);
+        chrome.storage.local.set({ subBgOpacity: v });
+    });
+
+    resetBtn.addEventListener('click', () => {
+        chrome.storage.local.set({
+            subBottom: 10, subTop: 'auto', subLeft: '0', subWidth: '100%',
+            subColor: "", subBgOpacity: 65, subSize: 26
+        }, () => {
+            rangeBottom.value = 10; valBottom.innerText = '10%';
+            rangeSize.value = 26; valSize.innerText = '26px';
+            rangeOpacity.value = 65; valOpacity.innerText = '65%';
+            colorPicker.value = '#ffffff';
+            if (subContainer) {
+                subContainer.style.setProperty('--cr-sub-bottom', '10%');
+                subContainer.style.setProperty('--cr-sub-top', 'auto');
+                subContainer.style.setProperty('--cr-sub-left', '0');
+                subContainer.style.setProperty('--cr-sub-width', '100%');
+            }
+            if (subText) {
+                subText.style.setProperty('--cr-sub-size', '26px');
+                subText.style.removeProperty('--cr-sub-color'); // Let it fallback to useAI logic
+                subText.style.setProperty('--cr-sub-bg', `rgba(0, 0, 0, 0.65)`);
+            }
+        });
     });
 }
 
@@ -308,7 +379,23 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
         subContainer.appendChild(textElement);
     }
 
-    textElement.style.color = useAI ? (settings.transEngine === 'custom_llm' ? '#00FFFF' : '#55FF55') : '#FFFF00';
+    if (settings.subColor) {
+        textElement.style.setProperty('--cr-sub-color', settings.subColor);
+    } else {
+        textElement.style.setProperty('--cr-sub-color', useAI ? (settings.transEngine === 'custom_llm' ? '#00FFFF' : '#55FF55') : '#FFFF00');
+    }
+    
+    textElement.style.setProperty('--cr-sub-bg', `rgba(0, 0, 0, ${settings.subBgOpacity / 100})`);
+    subContainer.style.setProperty('--cr-sub-top', settings.subTop);
+    subContainer.style.setProperty('--cr-sub-left', settings.subLeft);
+    subContainer.style.setProperty('--cr-sub-width', settings.subWidth);
+    if (settings.subBottom !== 'auto') {
+        subContainer.style.setProperty('--cr-sub-bottom', `${settings.subBottom}%`);
+    } else {
+        subContainer.style.setProperty('--cr-sub-bottom', 'auto');
+    }
+
+    makeDraggable(textElement, subContainer, playerContainer);
 
     if (video._dualSubListener) video.removeEventListener('timeupdate', video._dualSubListener);
 
@@ -439,4 +526,68 @@ function removeExistingSubtitles() {
     if (c) c.remove();
     if (w) w.remove();
     if (t) t.remove();
+}
+
+function makeDraggable(textEl, containerEl, videoContainer) {
+    if (textEl._dragInitialized) return;
+    textEl._dragInitialized = true;
+
+    let isDragging = false;
+    let startX, startY, initialLeft, initialTop;
+
+    textEl.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        
+        const rect = containerEl.getBoundingClientRect();
+        const parentRect = videoContainer.getBoundingClientRect();
+        
+        if (containerEl.style.getPropertyValue('--cr-sub-width') === '' || containerEl.style.getPropertyValue('--cr-sub-width') === '100%') {
+            containerEl.style.setProperty('--cr-sub-width', 'auto');
+            containerEl.style.setProperty('--cr-sub-bottom', 'auto');
+            initialLeft = rect.left - parentRect.left;
+            initialTop = rect.top - parentRect.top;
+            containerEl.style.setProperty('--cr-sub-left', `${initialLeft}px`);
+            containerEl.style.setProperty('--cr-sub-top', `${initialTop}px`);
+        } else {
+            initialLeft = parseFloat(containerEl.style.getPropertyValue('--cr-sub-left')) || (rect.left - parentRect.left);
+            initialTop = parseFloat(containerEl.style.getPropertyValue('--cr-sub-top')) || (rect.top - parentRect.top);
+        }
+
+        startX = e.clientX;
+        startY = e.clientY;
+        e.preventDefault(); 
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        
+        const newLeft = initialLeft + dx;
+        const newTop = initialTop + dy;
+        
+        containerEl.style.setProperty('--cr-sub-left', `${newLeft}px`);
+        containerEl.style.setProperty('--cr-sub-top', `${newTop}px`);
+    });
+
+    document.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        const rect = containerEl.getBoundingClientRect();
+        const parentRect = videoContainer.getBoundingClientRect();
+        
+        const leftPct = ((rect.left - parentRect.left) / parentRect.width) * 100;
+        const topPct = ((rect.top - parentRect.top) / parentRect.height) * 100;
+        
+        containerEl.style.setProperty('--cr-sub-left', `${leftPct}%`);
+        containerEl.style.setProperty('--cr-sub-top', `${topPct}%`);
+        
+        chrome.storage.local.set({
+            subLeft: `${leftPct}%`,
+            subTop: `${topPct}%`,
+            subWidth: 'auto',
+            subBottom: 'auto'
+        });
+    });
 }

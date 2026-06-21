@@ -1,113 +1,122 @@
-﻿{
-    "effort_medium":  {
-                          "message":  "Sederhana (Penalaran semula jadi lalai)"
-                      },
-    "toast_translation_missing":  {
-                                      "message":  "[Terjemahan hilang]"
-                                  },
-    "mode_fallback":  {
-                          "message":  "Rasmi dahulu, AI sandaran"
-                      },
-    "batch_size_label":  {
-                             "message":  "Saiz kelompok (ayat)"
-                         },
-    "translation_engine":  {
-                               "message":  "Enjin penterjemahan"
-                           },
-    "reasoning_effort_label":  {
-                                   "message":  "Usaha penalaran (untuk Kimi/R1/o3)"
-                               },
-    "lang_en_us":  {
-                       "message":  "Bahasa Inggeris (en-US)"
-                   },
-    "lang_zh_cn":  {
-                       "message":  "Bahasa Cina Ringkas (zh-CN)"
-                   },
-    "effort_low":  {
-                       "message":  "Rendah (Hadkan penalaran kepada satu ayat)"
-                   },
-    "mode_force_ai":  {
-                          "message":  "Paksa terjemahan AI"
-                      },
-    "engine_custom":  {
-                          "message":  "Model AI Tersuai (Disyorkan)"
-                      },
-    "saving":  {
-                   "message":  "Menyimpan..."
-               },
-    "effort_high":  {
-                        "message":  "Tinggi (Penalaran mendalam, lebih perlahan)"
-                    },
-    "save_button":  {
-                        "message":  "Simpan tetapan \u0026 muat semula halaman"
-                    },
-    "target_language":  {
-                            "message":  "Bahasa sasaran"
-                        },
-    "toast_fetching":  {
-                           "message":  "[Mengambil terjemahan serantau...]"
-                       },
-    "effort_ultra":  {
-                         "message":  "Ultra (Penalaran melampau, sangat perlahan)"
-                     },
-    "concurrency_label":  {
-                              "message":  "Permintaan serentak"
-                          },
-    "model_label":  {
-                        "message":  "Nama model"
-                    },
-    "saved_refreshing":  {
-                             "message":  "Disimpan! Memuat semula..."
-                         },
-    "toast_ai_translating":  {
-                                 "message":  "[Terjemahan AI sedang dijana...]"
-                             },
-    "extension_name":  {
-                           "message":  "Crunchyroll Sarikata Dwi Bahasa AI Pro"
-                       },
-    "lang_zh_hk":  {
-                       "message":  "Bahasa Cina Tradisional (zh-HK)"
-                   },
-    "engine_google":  {
-                          "message":  "Google Terjemahan Percuma"
-                      },
-    "api_key_label":  {
-                          "message":  "Kunci API"
-                      },
-    "effort_none":  {
-                        "message":  "Tiada (Respons kilat, langkau penalaran)"
-                    },
-    "popup_title":  {
-                        "message":  "Crunchyroll Sarikata Dwi Bahasa"
-                    },
-    "mode_native":  {
-                        "message":  "Rasmi sahaja"
-                    },
-    "api_url_label":  {
-                          "message":  "URL Titik Akhir API"
-                      },
-    "translation_mode":  {
-                             "message":  "Mod penterjemahan"
-                         },
-    "toast_parse_failed":  {
-                               "message":  "Parse failed! No official subtitles, no backup for translation."
-                           },
-    "toast_no_official_subs":  {
-                                   "message":  "No official subtitles found, AI fallback disabled."
-                               },
-    "toast_loaded":  {
-                         "message":  "Successfully loaded [ENGINE]!"
-                     },
-    "toast_connection_lost":  {
-                                  "message":  "[Connection lost]"
-                              },
-    "toast_api_error":  {
-                            "message":  "Batch API error: "
-                        },
-    "toast_download_failed":  {
-                                  "message":  "Subtitle file download failed."
-                              },
-    "toast_no_dialogue":  {
-                              "message":  "No dialogue parsed!"
-                          }
+{
+    "effort_medium": {
+        "message": "Sederhana (Penalaran semula jadi lalai)"
+    },
+    "toast_translation_missing": {
+        "message": "[Terjemahan hilang]"
+    },
+    "mode_fallback": {
+        "message": "Rasmi dahulu, AI sandaran"
+    },
+    "batch_size_label": {
+        "message": "Saiz kelompok (ayat)"
+    },
+    "translation_engine": {
+        "message": "Enjin penterjemahan"
+    },
+    "reasoning_effort_label": {
+        "message": "Usaha penalaran (untuk Kimi/R1/o3)"
+    },
+    "lang_en_us": {
+        "message": "Bahasa Inggeris (en-US)"
+    },
+    "lang_zh_cn": {
+        "message": "Bahasa Cina Ringkas (zh-CN)"
+    },
+    "effort_low": {
+        "message": "Rendah (Hadkan penalaran kepada satu ayat)"
+    },
+    "mode_force_ai": {
+        "message": "Paksa terjemahan AI"
+    },
+    "engine_custom": {
+        "message": "Model AI Tersuai (Disyorkan)"
+    },
+    "saving": {
+        "message": "Menyimpan..."
+    },
+    "effort_high": {
+        "message": "Tinggi (Penalaran mendalam, lebih perlahan)"
+    },
+    "save_button": {
+        "message": "Simpan tetapan & muat semula halaman"
+    },
+    "target_language": {
+        "message": "Bahasa sasaran"
+    },
+    "toast_fetching": {
+        "message": "[Mengambil terjemahan serantau...]"
+    },
+    "effort_ultra": {
+        "message": "Ultra (Penalaran melampau, sangat perlahan)"
+    },
+    "concurrency_label": {
+        "message": "Permintaan serentak"
+    },
+    "model_label": {
+        "message": "Nama model"
+    },
+    "saved_refreshing": {
+        "message": "Disimpan! Memuat semula..."
+    },
+    "toast_ai_translating": {
+        "message": "[Terjemahan AI sedang dijana...]"
+    },
+    "extension_name": {
+        "message": "Crunchyroll Sarikata Dwi Bahasa AI Pro"
+    },
+    "lang_zh_hk": {
+        "message": "Bahasa Cina Tradisional (zh-HK)"
+    },
+    "engine_google": {
+        "message": "Google Terjemahan Percuma"
+    },
+    "api_key_label": {
+        "message": "Kunci API"
+    },
+    "effort_none": {
+        "message": "Tiada (Respons kilat, langkau penalaran)"
+    },
+    "popup_title": {
+        "message": "Crunchyroll Sarikata Dwi Bahasa"
+    },
+    "mode_native": {
+        "message": "Rasmi sahaja"
+    },
+    "api_url_label": {
+        "message": "URL Titik Akhir API"
+    },
+    "translation_mode": {
+        "message": "Mod penterjemahan"
+    },
+    "toast_parse_failed": {
+        "message": "Parse failed! No official subtitles, no backup for translation."
+    },
+    "toast_no_official_subs": {
+        "message": "No official subtitles found, AI fallback disabled."
+    },
+    "toast_loaded": {
+        "message": "Successfully loaded [ENGINE]!"
+    },
+    "toast_connection_lost": {
+        "message": "[Connection lost]"
+    },
+    "toast_api_error": {
+        "message": "Batch API error: "
+    },
+    "toast_download_failed": {
+        "message": "Subtitle file download failed."
+    },
+    "toast_no_dialogue": {
+        "message": "No dialogue parsed!"
+    },
+    "font_color_label": {
+        "message": "Font Color"
+    },
+    "bg_opacity_label": {
+        "message": "Background Opacity"
+    },
+    "reset_style_btn": {
+        "message": "Reset Style & Pos"
+    }
 }

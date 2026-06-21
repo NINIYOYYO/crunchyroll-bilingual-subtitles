@@ -1,113 +1,122 @@
-﻿{
-    "effort_medium":  {
-                          "message":  "Sedang (Penalaran alami default)"
-                      },
-    "toast_translation_missing":  {
-                                      "message":  "[Terjemahan hilang]"
-                                  },
-    "mode_fallback":  {
-                          "message":  "Resmi dulu, AI cadangan"
-                      },
-    "batch_size_label":  {
-                             "message":  "Ukuran batch (kalimat)"
-                         },
-    "translation_engine":  {
-                               "message":  "Mesin penerjemah"
-                           },
-    "reasoning_effort_label":  {
-                                   "message":  "Upaya penalaran (untuk Kimi/R1/o3)"
-                               },
-    "lang_en_us":  {
-                       "message":  "Inggris (en-US)"
-                   },
-    "lang_zh_cn":  {
-                       "message":  "Mandarin Sederhana (zh-CN)"
-                   },
-    "effort_low":  {
-                       "message":  "Rendah (Batasi penalaran hingga satu kalimat)"
-                   },
-    "mode_force_ai":  {
-                          "message":  "Paksa terjemahan AI"
-                      },
-    "engine_custom":  {
-                          "message":  "Model AI Kustom (Direkomendasikan)"
-                      },
-    "saving":  {
-                   "message":  "Menyimpan..."
-               },
-    "effort_high":  {
-                        "message":  "Tinggi (Penalaran mendalam, lebih lambat)"
-                    },
-    "save_button":  {
-                        "message":  "Simpan pengaturan \u0026 segarkan halaman"
-                    },
-    "target_language":  {
-                            "message":  "Bahasa target"
-                        },
-    "toast_fetching":  {
-                           "message":  "[Mengambil terjemahan regional...]"
-                       },
-    "effort_ultra":  {
-                         "message":  "Ultra (Penalaran ekstrem, sangat lambat)"
-                     },
-    "concurrency_label":  {
-                              "message":  "Permintaan bersamaan"
-                          },
-    "model_label":  {
-                        "message":  "Nama model"
-                    },
-    "saved_refreshing":  {
-                             "message":  "Disimpan! Menyegarkan..."
-                         },
-    "toast_ai_translating":  {
-                                 "message":  "[Terjemahan AI sedang dibuat...]"
-                             },
-    "extension_name":  {
-                           "message":  "Crunchyroll Subtitle Bilingual AI Pro"
-                       },
-    "lang_zh_hk":  {
-                       "message":  "Mandarin Tradisional (zh-HK)"
-                   },
-    "engine_google":  {
-                          "message":  "Google Terjemahan Gratis"
-                      },
-    "api_key_label":  {
-                          "message":  "Kunci API"
-                      },
-    "effort_none":  {
-                        "message":  "Tidak ada (Respons kilat, lewati penalaran)"
-                    },
-    "popup_title":  {
-                        "message":  "Crunchyroll Subtitle Bilingual"
-                    },
-    "mode_native":  {
-                        "message":  "Hanya resmi"
-                    },
-    "api_url_label":  {
-                          "message":  "URL Endpoint API"
-                      },
-    "translation_mode":  {
-                             "message":  "Mode terjemahan"
-                         },
-    "toast_parse_failed":  {
-                               "message":  "Parse failed! No official subtitles, no backup for translation."
-                           },
-    "toast_no_official_subs":  {
-                                   "message":  "No official subtitles found, AI fallback disabled."
-                               },
-    "toast_loaded":  {
-                         "message":  "Successfully loaded [ENGINE]!"
-                     },
-    "toast_connection_lost":  {
-                                  "message":  "[Connection lost]"
-                              },
-    "toast_api_error":  {
-                            "message":  "Batch API error: "
-                        },
-    "toast_download_failed":  {
-                                  "message":  "Subtitle file download failed."
-                              },
-    "toast_no_dialogue":  {
-                              "message":  "No dialogue parsed!"
-                          }
+{
+    "effort_medium": {
+        "message": "Sedang (Penalaran alami default)"
+    },
+    "toast_translation_missing": {
+        "message": "[Terjemahan hilang]"
+    },
+    "mode_fallback": {
+        "message": "Resmi dulu, AI cadangan"
+    },
+    "batch_size_label": {
+        "message": "Ukuran batch (kalimat)"
+    },
+    "translation_engine": {
+        "message": "Mesin penerjemah"
+    },
+    "reasoning_effort_label": {
+        "message": "Upaya penalaran (untuk Kimi/R1/o3)"
+    },
+    "lang_en_us": {
+        "message": "Inggris (en-US)"
+    },
+    "lang_zh_cn": {
+        "message": "Mandarin Sederhana (zh-CN)"
+    },
+    "effort_low": {
+        "message": "Rendah (Batasi penalaran hingga satu kalimat)"
+    },
+    "mode_force_ai": {
+        "message": "Paksa terjemahan AI"
+    },
+    "engine_custom": {
+        "message": "Model AI Kustom (Direkomendasikan)"
+    },
+    "saving": {
+        "message": "Menyimpan..."
+    },
+    "effort_high": {
+        "message": "Tinggi (Penalaran mendalam, lebih lambat)"
+    },
+    "save_button": {
+        "message": "Simpan pengaturan & segarkan halaman"
+    },
+    "target_language": {
+        "message": "Bahasa target"
+    },
+    "toast_fetching": {
+        "message": "[Mengambil terjemahan regional...]"
+    },
+    "effort_ultra": {
+        "message": "Ultra (Penalaran ekstrem, sangat lambat)"
+    },
+    "concurrency_label": {
+        "message": "Permintaan bersamaan"
+    },
+    "model_label": {
+        "message": "Nama model"
+    },
+    "saved_refreshing": {
+        "message": "Disimpan! Menyegarkan..."
+    },
+    "toast_ai_translating": {
+        "message": "[Terjemahan AI sedang dibuat...]"
+    },
+    "extension_name": {
+        "message": "Crunchyroll Subtitle Bilingual AI Pro"
+    },
+    "lang_zh_hk": {
+        "message": "Mandarin Tradisional (zh-HK)"
+    },
+    "engine_google": {
+        "message": "Google Terjemahan Gratis"
+    },
+    "api_key_label": {
+        "message": "Kunci API"
+    },
+    "effort_none": {
+        "message": "Tidak ada (Respons kilat, lewati penalaran)"
+    },
+    "popup_title": {
+        "message": "Crunchyroll Subtitle Bilingual"
+    },
+    "mode_native": {
+        "message": "Hanya resmi"
+    },
+    "api_url_label": {
+        "message": "URL Endpoint API"
+    },
+    "translation_mode": {
+        "message": "Mode terjemahan"
+    },
+    "toast_parse_failed": {
+        "message": "Parse failed! No official subtitles, no backup for translation."
+    },
+    "toast_no_official_subs": {
+        "message": "No official subtitles found, AI fallback disabled."
+    },
+    "toast_loaded": {
+        "message": "Successfully loaded [ENGINE]!"
+    },
+    "toast_connection_lost": {
+        "message": "[Connection lost]"
+    },
+    "toast_api_error": {
+        "message": "Batch API error: "
+    },
+    "toast_download_failed": {
+        "message": "Subtitle file download failed."
+    },
+    "toast_no_dialogue": {
+        "message": "No dialogue parsed!"
+    },
+    "font_color_label": {
+        "message": "Font Color"
+    },
+    "bg_opacity_label": {
+        "message": "Background Opacity"
+    },
+    "reset_style_btn": {
+        "message": "Reset Style & Pos"
+    }
 }

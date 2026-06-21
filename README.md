@@ -16,6 +16,12 @@ A Chrome extension that provides AI-powered bilingual subtitles for Crunchyroll.
 - **Multi-language Support**: 14+ target languages
 - **i18n Support**: 15+ UI languages (English, 简体中文, 繁體中文, 日本語, 한국어, etc.)
 
+### Screenshots
+
+<div align="center">
+  <img src="assets/en.png" width="400" alt="Settings Panel" />
+</div>
+
 ### Installation
 1. Download or clone this repository
 2. Open Chrome and navigate to `chrome://extensions/`
@@ -65,6 +71,12 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 - **播放器内调节**：直接在播放器中调整字幕大小和位置
 - **多语言支持**：14+ 种目标语言
 - **国际化支持**：15+ 种界面语言（英语、简体中文、繁體中文、日本語、한국어 等）
+
+### 界面展示
+
+<div align="center">
+  <img src="assets/zh-cn.png" width="400" alt="设置面板" />
+</div>
 
 ### 安装方法
 1. 下载或克隆本仓库

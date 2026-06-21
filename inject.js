@@ -1,4 +1,4 @@
-﻿// inject.js
+// inject.js
 // Network interceptor for Crunchyroll subtitle API
 (function() {
     if (window.__CR_DUAL_SUBS_INJECTED__) return;
@@ -11,7 +11,6 @@
 
     window.fetch = async function(...args) {
         const response = await originalFetch.apply(this, args);
-        const clone = response.clone();
 
         let reqUrl = '';
         let reqOptions = {};
@@ -22,7 +21,8 @@
             reqOptions = args[1] || {};
             reqHeaders = reqOptions.headers;
         } else if (args[0] && typeof args[0] === 'object') {
-            reqUrl = args[0].url || '';
+            // Fix: support URL objects by checking href
+            reqUrl = args[0].url || args[0].href || String(args[0]);
             reqOptions = args[1] || {};
             reqHeaders = reqOptions.headers || args[0].headers;
         }
@@ -50,6 +50,7 @@
         }
 
         if (reqUrl && reqUrl.includes('/playback/v3/') && reqUrl.includes('/play')) {
+            const clone = response.clone(); // <--- Fix: Only clone when needed
             const retryKey = reqUrl;
 
             clone.json().then(data => {

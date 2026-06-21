@@ -1,113 +1,122 @@
-﻿{
-    "effort_medium":  {
-                          "message":  "Среднее (Рассуждение по умолчанию)"
-                      },
-    "toast_translation_missing":  {
-                                      "message":  "[Перевод отсутствует]"
-                                  },
-    "mode_fallback":  {
-                          "message":  "Официальный сначала, ИИ запасной"
-                      },
-    "batch_size_label":  {
-                             "message":  "Размер пакета (предложения)"
-                         },
-    "translation_engine":  {
-                               "message":  "Движок перевода"
-                           },
-    "reasoning_effort_label":  {
-                                   "message":  "Усилие рассуждения (для Kimi/R1/o3)"
-                               },
-    "lang_en_us":  {
-                       "message":  "Английский (en-US)"
-                   },
-    "lang_zh_cn":  {
-                       "message":  "Упрощенный китайский (zh-CN)"
-                   },
-    "effort_low":  {
-                       "message":  "Низкое (Ограничить рассуждение одним предложением)"
-                   },
-    "mode_force_ai":  {
-                          "message":  "Принудительный перевод ИИ"
-                      },
-    "engine_custom":  {
-                          "message":  "Пользовательская модель ИИ (Рекомендуется)"
-                      },
-    "saving":  {
-                   "message":  "Сохранение..."
-               },
-    "effort_high":  {
-                        "message":  "Высокое (Глубокое рассуждение, медленнее)"
-                    },
-    "save_button":  {
-                        "message":  "Сохранить настройки и обновить страницу"
-                    },
-    "target_language":  {
-                            "message":  "Целевой язык"
-                        },
-    "toast_fetching":  {
-                           "message":  "[Получение регионального перевода...]"
-                       },
-    "effort_ultra":  {
-                         "message":  "Ультра (Экстремальное рассуждение, очень медленно)"
-                     },
-    "concurrency_label":  {
-                              "message":  "Параллельные запросы"
-                          },
-    "model_label":  {
-                        "message":  "Имя модели"
-                    },
-    "saved_refreshing":  {
-                             "message":  "Сохранено! Обновление..."
-                         },
-    "toast_ai_translating":  {
-                                 "message":  "[ИИ перевод выполняется...]"
-                             },
-    "extension_name":  {
-                           "message":  "Crunchyroll AI Двуязычные субтитры Pro"
-                       },
-    "lang_zh_hk":  {
-                       "message":  "Традиционный китайский (zh-HK)"
-                   },
-    "engine_google":  {
-                          "message":  "Google Бесплатный перевод"
-                      },
-    "api_key_label":  {
-                          "message":  "API ключ"
-                      },
-    "effort_none":  {
-                        "message":  "Нет (Молниеносный ответ, пропустить рассуждение)"
-                    },
-    "popup_title":  {
-                        "message":  "Crunchyroll Двуязычные субтитры"
-                    },
-    "mode_native":  {
-                        "message":  "Только официальный"
-                    },
-    "api_url_label":  {
-                          "message":  "URL конечной точки API"
-                      },
-    "translation_mode":  {
-                             "message":  "Режим перевода"
-                         },
-    "toast_parse_failed":  {
-                               "message":  "Parse failed! No official subtitles, no backup for translation."
-                           },
-    "toast_no_official_subs":  {
-                                   "message":  "No official subtitles found, AI fallback disabled."
-                               },
-    "toast_loaded":  {
-                         "message":  "Successfully loaded [ENGINE]!"
-                     },
-    "toast_connection_lost":  {
-                                  "message":  "[Connection lost]"
-                              },
-    "toast_api_error":  {
-                            "message":  "Batch API error: "
-                        },
-    "toast_download_failed":  {
-                                  "message":  "Subtitle file download failed."
-                              },
-    "toast_no_dialogue":  {
-                              "message":  "No dialogue parsed!"
-                          }
+{
+    "effort_medium": {
+        "message": "Среднее (Рассуждение по умолчанию)"
+    },
+    "toast_translation_missing": {
+        "message": "[Перевод отсутствует]"
+    },
+    "mode_fallback": {
+        "message": "Официальный сначала, ИИ запасной"
+    },
+    "batch_size_label": {
+        "message": "Размер пакета (предложения)"
+    },
+    "translation_engine": {
+        "message": "Движок перевода"
+    },
+    "reasoning_effort_label": {
+        "message": "Усилие рассуждения (для Kimi/R1/o3)"
+    },
+    "lang_en_us": {
+        "message": "Английский (en-US)"
+    },
+    "lang_zh_cn": {
+        "message": "Упрощенный китайский (zh-CN)"
+    },
+    "effort_low": {
+        "message": "Низкое (Ограничить рассуждение одним предложением)"
+    },
+    "mode_force_ai": {
+        "message": "Принудительный перевод ИИ"
+    },
+    "engine_custom": {
+        "message": "Пользовательская модель ИИ (Рекомендуется)"
+    },
+    "saving": {
+        "message": "Сохранение..."
+    },
+    "effort_high": {
+        "message": "Высокое (Глубокое рассуждение, медленнее)"
+    },
+    "save_button": {
+        "message": "Сохранить настройки и обновить страницу"
+    },
+    "target_language": {
+        "message": "Целевой язык"
+    },
+    "toast_fetching": {
+        "message": "[Получение регионального перевода...]"
+    },
+    "effort_ultra": {
+        "message": "Ультра (Экстремальное рассуждение, очень медленно)"
+    },
+    "concurrency_label": {
+        "message": "Параллельные запросы"
+    },
+    "model_label": {
+        "message": "Имя модели"
+    },
+    "saved_refreshing": {
+        "message": "Сохранено! Обновление..."
+    },
+    "toast_ai_translating": {
+        "message": "[ИИ перевод выполняется...]"
+    },
+    "extension_name": {
+        "message": "Crunchyroll AI Двуязычные субтитры Pro"
+    },
+    "lang_zh_hk": {
+        "message": "Традиционный китайский (zh-HK)"
+    },
+    "engine_google": {
+        "message": "Google Бесплатный перевод"
+    },
+    "api_key_label": {
+        "message": "API ключ"
+    },
+    "effort_none": {
+        "message": "Нет (Молниеносный ответ, пропустить рассуждение)"
+    },
+    "popup_title": {
+        "message": "Crunchyroll Двуязычные субтитры"
+    },
+    "mode_native": {
+        "message": "Только официальный"
+    },
+    "api_url_label": {
+        "message": "URL конечной точки API"
+    },
+    "translation_mode": {
+        "message": "Режим перевода"
+    },
+    "toast_parse_failed": {
+        "message": "Parse failed! No official subtitles, no backup for translation."
+    },
+    "toast_no_official_subs": {
+        "message": "No official subtitles found, AI fallback disabled."
+    },
+    "toast_loaded": {
+        "message": "Successfully loaded [ENGINE]!"
+    },
+    "toast_connection_lost": {
+        "message": "[Connection lost]"
+    },
+    "toast_api_error": {
+        "message": "Batch API error: "
+    },
+    "toast_download_failed": {
+        "message": "Subtitle file download failed."
+    },
+    "toast_no_dialogue": {
+        "message": "No dialogue parsed!"
+    },
+    "font_color_label": {
+        "message": "Font Color"
+    },
+    "bg_opacity_label": {
+        "message": "Background Opacity"
+    },
+    "reset_style_btn": {
+        "message": "Reset Style & Pos"
+    }
 }

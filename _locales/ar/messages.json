@@ -1,113 +1,122 @@
-﻿{
-    "effort_medium":  {
-                          "message":  "متوسط (الاستدلال الطبيعي الافتراضي)"
-                      },
-    "toast_translation_missing":  {
-                                      "message":  "[الترجمة مفقودة]"
-                                  },
-    "mode_fallback":  {
-                          "message":  "الرسمية أولاً، ذكاء اصطناعي احتياطي"
-                      },
-    "batch_size_label":  {
-                             "message":  "حجم الدفعة (جمل)"
-                         },
-    "translation_engine":  {
-                               "message":  "محرك الترجمة"
-                           },
-    "reasoning_effort_label":  {
-                                   "message":  "جهد الاستدلال (لـ Kimi/R1/o3)"
-                               },
-    "lang_en_us":  {
-                       "message":  "الإنجليزية (en-US)"
-                   },
-    "lang_zh_cn":  {
-                       "message":  "الصينية المبسطة (zh-CN)"
-                   },
-    "effort_low":  {
-                       "message":  "منخفض (تقييد الاستدلال بجملة واحدة)"
-                   },
-    "mode_force_ai":  {
-                          "message":  "إجبار ترجمة الذكاء الاصطناعي"
-                      },
-    "engine_custom":  {
-                          "message":  "نموذج ذكاء اصطناعي مخصص (موصى به)"
-                      },
-    "saving":  {
-                   "message":  "جار الحفظ..."
-               },
-    "effort_high":  {
-                        "message":  "عالي (استدلال عميق، أبطأ)"
-                    },
-    "save_button":  {
-                        "message":  "حفظ الإعدادات وتحديث الصفحة"
-                    },
-    "target_language":  {
-                            "message":  "اللغة المستهدفة"
-                        },
-    "toast_fetching":  {
-                           "message":  "[جار جلب الترجمة الإقليمية...]"
-                       },
-    "effort_ultra":  {
-                         "message":  "فائق (استدلال متطرف، بطيء جداً)"
-                     },
-    "concurrency_label":  {
-                              "message":  "طلبات متزامنة"
-                          },
-    "model_label":  {
-                        "message":  "اسم النموذج"
-                    },
-    "saved_refreshing":  {
-                             "message":  "تم الحفظ! جار التحديث..."
-                         },
-    "toast_ai_translating":  {
-                                 "message":  "[جار إنشاء ترجمة الذكاء الاصطناعي...]"
-                             },
-    "extension_name":  {
-                           "message":  "Crunchyroll ترجمات ثنائية اللغة بالذكاء الاصطناعي Pro"
-                       },
-    "lang_zh_hk":  {
-                       "message":  "الصينية التقليدية (zh-HK)"
-                   },
-    "engine_google":  {
-                          "message":  "Google ترجمة مجانية"
-                      },
-    "api_key_label":  {
-                          "message":  "مفتاح API"
-                      },
-    "effort_none":  {
-                        "message":  "لا شيء (استجابة برقية، تخطي الاستدلال)"
-                    },
-    "popup_title":  {
-                        "message":  "Crunchyroll ترجمات ثنائية اللغة"
-                    },
-    "mode_native":  {
-                        "message":  "الرسمية فقط"
-                    },
-    "api_url_label":  {
-                          "message":  "عنوان URL لنقطة نهاية API"
-                      },
-    "translation_mode":  {
-                             "message":  "وضع الترجمة"
-                         },
-    "toast_parse_failed":  {
-                               "message":  "Parse failed! No official subtitles, no backup for translation."
-                           },
-    "toast_no_official_subs":  {
-                                   "message":  "No official subtitles found, AI fallback disabled."
-                               },
-    "toast_loaded":  {
-                         "message":  "Successfully loaded [ENGINE]!"
-                     },
-    "toast_connection_lost":  {
-                                  "message":  "[Connection lost]"
-                              },
-    "toast_api_error":  {
-                            "message":  "Batch API error: "
-                        },
-    "toast_download_failed":  {
-                                  "message":  "Subtitle file download failed."
-                              },
-    "toast_no_dialogue":  {
-                              "message":  "No dialogue parsed!"
-                          }
+{
+    "effort_medium": {
+        "message": "متوسط (الاستدلال الطبيعي الافتراضي)"
+    },
+    "toast_translation_missing": {
+        "message": "[الترجمة مفقودة]"
+    },
+    "mode_fallback": {
+        "message": "الرسمية أولاً، ذكاء اصطناعي احتياطي"
+    },
+    "batch_size_label": {
+        "message": "حجم الدفعة (جمل)"
+    },
+    "translation_engine": {
+        "message": "محرك الترجمة"
+    },
+    "reasoning_effort_label": {
+        "message": "جهد الاستدلال (لـ Kimi/R1/o3)"
+    },
+    "lang_en_us": {
+        "message": "الإنجليزية (en-US)"
+    },
+    "lang_zh_cn": {
+        "message": "الصينية المبسطة (zh-CN)"
+    },
+    "effort_low": {
+        "message": "منخفض (تقييد الاستدلال بجملة واحدة)"
+    },
+    "mode_force_ai": {
+        "message": "إجبار ترجمة الذكاء الاصطناعي"
+    },
+    "engine_custom": {
+        "message": "نموذج ذكاء اصطناعي مخصص (موصى به)"
+    },
+    "saving": {
+        "message": "جار الحفظ..."
+    },
+    "effort_high": {
+        "message": "عالي (استدلال عميق، أبطأ)"
+    },
+    "save_button": {
+        "message": "حفظ الإعدادات وتحديث الصفحة"
+    },
+    "target_language": {
+        "message": "اللغة المستهدفة"
+    },
+    "toast_fetching": {
+        "message": "[جار جلب الترجمة الإقليمية...]"
+    },
+    "effort_ultra": {
+        "message": "فائق (استدلال متطرف، بطيء جداً)"
+    },
+    "concurrency_label": {
+        "message": "طلبات متزامنة"
+    },
+    "model_label": {
+        "message": "اسم النموذج"
+    },
+    "saved_refreshing": {
+        "message": "تم الحفظ! جار التحديث..."
+    },
+    "toast_ai_translating": {
+        "message": "[جار إنشاء ترجمة الذكاء الاصطناعي...]"
+    },
+    "extension_name": {
+        "message": "Crunchyroll ترجمات ثنائية اللغة بالذكاء الاصطناعي Pro"
+    },
+    "lang_zh_hk": {
+        "message": "الصينية التقليدية (zh-HK)"
+    },
+    "engine_google": {
+        "message": "Google ترجمة مجانية"
+    },
+    "api_key_label": {
+        "message": "مفتاح API"
+    },
+    "effort_none": {
+        "message": "لا شيء (استجابة برقية، تخطي الاستدلال)"
+    },
+    "popup_title": {
+        "message": "Crunchyroll ترجمات ثنائية اللغة"
+    },
+    "mode_native": {
+        "message": "الرسمية فقط"
+    },
+    "api_url_label": {
+        "message": "عنوان URL لنقطة نهاية API"
+    },
+    "translation_mode": {
+        "message": "وضع الترجمة"
+    },
+    "toast_parse_failed": {
+        "message": "Parse failed! No official subtitles, no backup for translation."
+    },
+    "toast_no_official_subs": {
+        "message": "No official subtitles found, AI fallback disabled."
+    },
+    "toast_loaded": {
+        "message": "Successfully loaded [ENGINE]!"
+    },
+    "toast_connection_lost": {
+        "message": "[Connection lost]"
+    },
+    "toast_api_error": {
+        "message": "Batch API error: "
+    },
+    "toast_download_failed": {
+        "message": "Subtitle file download failed."
+    },
+    "toast_no_dialogue": {
+        "message": "No dialogue parsed!"
+    },
+    "font_color_label": {
+        "message": "Font Color"
+    },
+    "bg_opacity_label": {
+        "message": "Background Opacity"
+    },
+    "reset_style_btn": {
+        "message": "Reset Style & Pos"
+    }
 }
