@@ -15,7 +15,8 @@ const DEFAULT_SETTINGS = {
     subBottom: 10, 
     batchSize: 10, 
     concurrency: 3,
-    reasoningEffort: "medium",
+    reasoningEnabled: true,
+    streaming: true,
     subColor: "",
     subBgOpacity: 65,
     subTop: "auto",
@@ -196,6 +197,31 @@ async function fetchAIBatchTranslation(linesArray, settings) {
             }
         });
     });
+}
+
+// ✨ 流式通道：打开长连接到 background，实时接收逐行(partial)与最终(done)翻译
+// onPartial(translationsMap) / onDone(data, success, error)
+function openTranslationStream(linesArray, settings, callbacks) {
+    const { onPartial, onDone } = callbacks;
+    const port = chrome.runtime.connect({ name: 'translate_stream' });
+    let settled = false;
+    const finish = (data, success, error) => {
+        if (settled) return;
+        settled = true;
+        try { port.disconnect(); } catch (e) {}
+        if (onDone) onDone(data, success, error);
+    };
+    port.onMessage.addListener((msg) => {
+        if (!msg) return;
+        if (msg.type === 'partial') {
+            if (onPartial) onPartial(msg.translations || {});
+        } else if (msg.type === 'done') {
+            finish(msg.translations, msg.success, msg.error);
+        }
+    });
+    port.onDisconnect.addListener(() => finish(null, false, "stream disconnected"));
+    port.postMessage({ action: 'translate_stream', lines: linesArray, settings });
+    return port;
 }
 
 function parseVTT(vttText) {
@@ -399,13 +425,90 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
 
     if (video._dualSubListener) video.removeEventListener('timeupdate', video._dualSubListener);
 
+    // ✨ 实时流式开关：仅 custom_llm 引擎支持逐字流式
+    const streamingEnabled = useAI && settings.streaming && settings.transEngine === 'custom_llm';
+    const streamingCache = {}; // source line -> 进行中的部分译文（实时显示用）
+
     let currentDisplayedSourceText = "";
-    let pendingEmergencyFetch = false;
-    
+    let currentActiveLines = []; // 当前正在显示的字幕行（保留行内 \n，用于缓存 key 匹配）
+
     const inFlight = new Set();
     const BATCH_SIZE = settings.batchSize || 10;
     const MAX_CONCURRENCY = settings.concurrency || 3;
     let isPreloading = false;
+
+    // ✨ 渲染当前正在显示的字幕行：优先用最终译文，其次用流式中的部分译文，未开始则显示省略号占位
+    // 译文内部的真实换行(\n)转为 <br>，保证多行字幕正确换行
+    const renderActive = () => {
+        if (!currentDisplayedSourceText) {
+            textElement.style.setProperty('display', 'none', 'important');
+            textElement.innerHTML = '';
+            return;
+        }
+        const lines = currentActiveLines;
+        // 译文内部换行 -> <br>：同时处理真正的换行符(0x0A) 与流式过程中模型打出的字面 "\n" 两字符
+        const fmt = (t) => t.replace(/\n/g, '<br>').replace(/\\n/g, '<br>');
+        const parts = lines.map(line => {
+            if (translationCache[line]) return fmt(translationCache[line]);
+            const sp = streamingCache[line];
+            if (sp != null) return fmt(sp) + '▌'; // 仍在生成中，加光标提示
+            return `<span style="color:#888;font-size:16px;">…</span>`;
+        });
+        textElement.innerHTML = parts.join('<br>');
+        textElement.style.setProperty('display', 'inline-block', 'important');
+    };
+
+    // ✨ 统一的批次请求：流式模式走 Port 实时回传；非流式/Google 走原批量逻辑
+    function requestBatch(chunk) {
+        chunk.forEach(t => inFlight.add(t));
+
+        if (streamingEnabled) {
+            return new Promise((resolve) => {
+                openTranslationStream(chunk, settings, {
+                    onPartial: (tr) => {
+                        const activeLines = currentActiveLines;
+                        let hitsActive = false;
+                        Object.keys(tr).forEach(k => {
+                            const line = chunk[Number(k)];
+                            if (line != null) {
+                                streamingCache[line] = tr[k];
+                                if (activeLines.includes(line)) hitsActive = true;
+                            }
+                        });
+                        if (hitsActive) renderActive();
+                    },
+                    onDone: (data, success) => {
+                        chunk.forEach(t => inFlight.delete(t));
+                        if (success && data) {
+                            consecutiveErrors = 0;
+                            data.forEach((t, i) => {
+                                const line = chunk[i];
+                                if (line != null) { translationCache[line] = t; delete streamingCache[line]; }
+                            });
+                        } else {
+                            consecutiveErrors++;
+                            showToast(chrome.i18n.getMessage("toast_api_error"), true);
+                            chunk.forEach(t => delete streamingCache[t]);
+                        }
+                        if (currentDisplayedSourceText) renderActive();
+                        resolve(data);
+                    }
+                });
+            });
+        }
+
+        return fetchAIBatchTranslation(chunk, settings).then(data => {
+            data.forEach((t, i) => {
+                const line = chunk[i];
+                if (line != null) translationCache[line] = t;
+            });
+            chunk.forEach(t => inFlight.delete(t));
+            if (currentDisplayedSourceText) renderActive();
+            return data;
+        }).catch(() => {
+            chunk.forEach(t => inFlight.delete(t));
+        });
+    }
 
     const runContinuousPreload = async () => {
         if (!useAI || isPreloading) return;
@@ -417,11 +520,11 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
             const actualTime = v.currentTime;
 
             const currentIndex = parsedSubs.findIndex(sub => sub.end >= actualTime);
-            if (currentIndex === -1) break; 
+            if (currentIndex === -1) break;
 
             const futureSubs = parsedSubs.slice(currentIndex);
             const uncachedLines =[...new Set(
-                futureSubs.map(s => s.text.trim()).filter(t => t && !translationCache[t] && !inFlight.has(t))
+                futureSubs.map(s => s.text).filter(t => t && !translationCache[t] && !inFlight.has(t))
             )];
 
             if (uncachedLines.length === 0) break;
@@ -432,24 +535,20 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
                 chunks.push(targetLines.slice(i, i + BATCH_SIZE));
             }
 
-            const promises = chunks.map(chunk => {
-                chunk.forEach(t => inFlight.add(t));
-                return fetchAIBatchTranslation(chunk, settings).finally(() => {
-                    chunk.forEach(t => inFlight.delete(t));
-                });
-            });
+            // 流式模式下预载不阻塞渲染：直接 fire，逐字结果会经 onPartial 实时上屏
+            const promises = chunks.map(chunk => requestBatch(chunk));
 
             await Promise.all(promises);
             await new Promise(r => setTimeout(r, 1000));
         }
-        
+
         isPreloading = false;
     };
-    
-    video._dualSubListener = async () => {
+
+    video._dualSubListener = () => {
         if (settings.secondLang === "none") return;
         const currentTime = video.currentTime;
-        
+
         if (useAI) runContinuousPreload();
 
         const activeSubs = parsedSubs.filter(sub => currentTime >= sub.start && currentTime <= sub.end);
@@ -460,57 +559,19 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
 
             if (currentDisplayedSourceText !== combinedSourceText) {
                 currentDisplayedSourceText = combinedSourceText;
+                currentActiveLines = lines;
+                renderActive(); // 立即反映当前已有译文 / 部分译文 / 占位
 
-                if (useAI) {
-                    const allCached = lines.every(line => translationCache[line]);
-
-                    if (!allCached) {
-                        const isBeingPreloaded = lines.some(line => inFlight.has(line));
-                        
-                        if (isBeingPreloaded) {
-                            textElement.innerHTML = `<span style="color:#aaa;font-size:16px;">${chrome.i18n.getMessage('toast_ai_translating')}</span>`;
-                            textElement.style.setProperty('display', 'inline-block', 'important');
-                            return; 
-                        }
-
-                        if (pendingEmergencyFetch) return;
-                        pendingEmergencyFetch = true;
-                        
-                        textElement.innerHTML = `<span style="color:#aaa;font-size:16px;">${chrome.i18n.getMessage('toast_fetching')}</span>`;
-                        textElement.style.setProperty('display', 'inline-block', 'important'); 
-                        
-                        try {
-                            const currentIndex = parsedSubs.findIndex(sub => sub.end >= currentTime);
-                            const contextSubs = parsedSubs.slice(currentIndex, currentIndex + BATCH_SIZE);
-                            const contextLines =[...new Set(contextSubs.map(s => s.text.trim()).filter(t => t && !translationCache[t] && !inFlight.has(t)))];
-                            
-                            if (contextLines.length > 0) {
-                                contextLines.forEach(t => inFlight.add(t));
-                                await fetchAIBatchTranslation(contextLines, settings);
-                                contextLines.forEach(t => inFlight.delete(t));
-                            }
-
-                            if (currentDisplayedSourceText === combinedSourceText) {
-                                const displayTranslated = lines.map(line => translationCache[line] || line);
-                                textElement.innerHTML = displayTranslated.join('<br>');
-                            }
-                        } finally {
-                            pendingEmergencyFetch = false;
-                        }
-                    } else {
-                        const translatedLines = lines.map(line => translationCache[line]);
-                        textElement.innerHTML = translatedLines.join('<br>');
-                        textElement.style.setProperty('display', 'inline-block', 'important');
-                    }
-                } else {
-                    textElement.innerHTML = combinedSourceText.replace(/\n/g, '<br>');
-                    textElement.style.setProperty('display', 'inline-block', 'important');
+                // 触发尚未就绪的行的翻译（流式模式下会逐字上屏）
+                const needTranslation = lines.filter(l => !translationCache[l] && !inFlight.has(l));
+                if (useAI && needTranslation.length > 0) {
+                    requestBatch(needTranslation);
                 }
             }
         } else {
             if (currentDisplayedSourceText !== "") {
                 currentDisplayedSourceText = "";
-                pendingEmergencyFetch = false;
+                currentActiveLines = [];
                 textElement.style.setProperty('display', 'none', 'important');
                 textElement.innerHTML = '';
             }

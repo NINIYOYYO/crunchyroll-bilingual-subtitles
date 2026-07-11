@@ -114,7 +114,10 @@
         "message": "Russian (ru-RU)"
     },
     "reasoning_effort_label": {
-        "message": "Reasoning Effort (for Kimi/R1/o3)"
+        "message": "Reasoning Effort (turn off to save free-tier tokens & speed up)"
+    },
+    "streaming_label": {
+        "message": "Real-time streaming (show translation as it generates)"
     },
     "lang_ar_sa": {
         "message": "Arabic (ar-SA)"

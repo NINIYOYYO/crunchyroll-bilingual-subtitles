@@ -15,7 +15,7 @@
         "message": "Motor de traducción"
     },
     "reasoning_effort_label": {
-        "message": "Esfuerzo de razonamiento (para Kimi/R1/o3)"
+        "message": "Esfuerzo de razonamiento (desactiva para ahorrar tokens y acelerar)"
     },
     "lang_en_us": {
         "message": "Inglés (en-US)"

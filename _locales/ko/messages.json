@@ -15,7 +15,7 @@
         "message": "번역 엔진"
     },
     "reasoning_effort_label": {
-        "message": "추론 강도 (Kimi/R1/o3용)"
+        "message": "추론 강도（끄면 무료 토큰 절약·빠르게）"
     },
     "lang_en_us": {
         "message": "영어 (en-US)"

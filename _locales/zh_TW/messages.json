@@ -15,7 +15,7 @@
         "message": "翻譯引擎"
     },
     "reasoning_effort_label": {
-        "message": "推理力度 (針對 Kimi/R1/o3)"
+        "message": "推理強度（關閉可省免費額度/提速）"
     },
     "lang_en_us": {
         "message": "英文 (en-US)"

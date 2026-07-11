@@ -15,7 +15,7 @@
         "message": "Công cụ dịch"
     },
     "reasoning_effort_label": {
-        "message": "Nỗ lực suy luận (cho Kimi/R1/o3)"
+        "message": "Nỗ lực suy luận (tắt để tiết kiệm token miễn phí & nhanh hơn)"
     },
     "lang_en_us": {
         "message": "Tiếng Anh (en-US)"

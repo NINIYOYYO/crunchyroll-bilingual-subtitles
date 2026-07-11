@@ -17,6 +17,16 @@
     .status { display: none; margin-top: 10px; padding: 8px; border-radius: 4px; font-size: 12px; text-align: center; }
     .status.success { background: #1a3a1a; color: #55FF55; border: 1px solid #55FF55; }
     .status.error { background: #3a1a1a; color: #FF6B6B; border: 1px solid #FF6B6B; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+    .toggle-label { margin: 0; font-size: 13px; }
+    .toggle-label.hl { color: #f47521; }
+    .toggle-group { border: 1px dashed #555; border-radius: 6px; padding: 10px 12px; margin-top: 10px; }
+    .switch { position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; inset: 0; background: #555; transition: .2s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: #fff; transition: .2s; border-radius: 50%; }
+    .switch input:checked + .slider { background: #f47521; }
+    .switch input:checked + .slider:before { transform: translateX(18px); }
   </style>
 </head>
 <body>
@@ -78,15 +88,22 @@
         </div>
     </div>
 
-    <div class="item" style="margin-top: 5px;">
-        <label id="label-effort" style="color: #f47521;"></label>
-        <select id="reasoning-effort">
-            <option value="none"></option>
-            <option value="low"></option>
-            <option value="medium" selected></option>
-            <option value="high"></option>
-            <option value="ultra"></option>
-        </select>
+    <div class="toggle-group">
+        <div class="item toggle-row">
+            <label for="reasoning-toggle" id="label-effort" class="toggle-label hl"></label>
+            <label class="switch">
+                <input type="checkbox" id="reasoning-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="item toggle-row">
+            <label for="streaming-toggle" id="label-streaming" class="toggle-label"></label>
+            <label class="switch">
+                <input type="checkbox" id="streaming-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
     </div>
 
     <div class="row" style="margin-top: 5px;">

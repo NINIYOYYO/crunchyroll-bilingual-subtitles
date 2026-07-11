@@ -13,6 +13,7 @@
     document.getElementById("label-model").textContent = chrome.i18n.getMessage("model_label");
     document.getElementById("label-api-key").textContent = chrome.i18n.getMessage("api_key_label");
     document.getElementById("label-effort").textContent = chrome.i18n.getMessage("reasoning_effort_label");
+    document.getElementById("label-streaming").textContent = chrome.i18n.getMessage("streaming_label");
     document.getElementById("label-batch").textContent = chrome.i18n.getMessage("batch_size_label");
     document.getElementById("label-concurrency").textContent = chrome.i18n.getMessage("concurrency_label");
     saveBtn.textContent = chrome.i18n.getMessage("save_button");
@@ -26,7 +27,6 @@
     const langSelect = document.getElementById("lang-select");
     const modeSelect = document.getElementById("mode-select");
     const engineSelectEl = document.getElementById("engine-select");
-    const effortSelect = document.getElementById("reasoning-effort");
 
     // Set option texts (keep values unchanged)
     // Note: lang options are already set via __MSG__ in HTML attributes if needed,
@@ -50,11 +50,6 @@
         const msg = chrome.i18n.getMessage(key);
         if (msg) opt.textContent = msg;
     });
-    Array.from(effortSelect.options).forEach(opt => {
-        const key = "effort_" + opt.value;
-        const msg = chrome.i18n.getMessage(key);
-        if (msg) opt.textContent = msg;
-    });
 
     const updateVisibility = () => {
         aiFields.style.display = engineSelect.value === "custom_llm" ? "block" : "none";
@@ -69,7 +64,8 @@
         apiKey: "",
         batchSize: 10,
         concurrency: 3,
-        reasoningEffort: "medium"
+        reasoningEnabled: true,
+        streaming: true
     }, (s) => {
         langSelect.value = s.secondLang || "zh-CN";
         modeSelect.value = s.transMode || "fallback";
@@ -79,7 +75,8 @@
         document.getElementById("api-key").value = s.apiKey || "";
         document.getElementById("batch-size").value = s.batchSize || 10;
         document.getElementById("concurrency").value = s.concurrency || 3;
-        effortSelect.value = s.reasoningEffort || "medium";
+        document.getElementById("reasoning-toggle").checked = s.reasoningEnabled !== false;
+        document.getElementById("streaming-toggle").checked = s.streaming !== false;
         updateVisibility();
     });
 
@@ -95,7 +92,8 @@
             apiKey: document.getElementById("api-key").value.trim(),
             batchSize: parseInt(document.getElementById("batch-size").value) || 10,
             concurrency: parseInt(document.getElementById("concurrency").value) || 3,
-            reasoningEffort: effortSelect.value
+            reasoningEnabled: document.getElementById("reasoning-toggle").checked,
+            streaming: document.getElementById("streaming-toggle").checked
         };
 
         saveBtn.disabled = true;

@@ -15,7 +15,7 @@
         "message": "翻訳エンジン"
     },
     "reasoning_effort_label": {
-        "message": "推論強度 (Kimi/R1/o3用)"
+        "message": "推論強度（オフで無料トークン節約・高速化）"
     },
     "lang_en_us": {
         "message": "英語 (en-US)"

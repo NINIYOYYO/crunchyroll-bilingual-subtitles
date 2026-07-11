@@ -15,7 +15,7 @@
         "message": "Mesin penerjemah"
     },
     "reasoning_effort_label": {
-        "message": "Upaya penalaran (untuk Kimi/R1/o3)"
+        "message": "Upaya penalaran (matikan untuk hemat token gratis & lebih cepat)"
     },
     "lang_en_us": {
         "message": "Inggris (en-US)"
