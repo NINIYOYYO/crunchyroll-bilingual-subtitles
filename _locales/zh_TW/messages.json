@@ -130,5 +130,8 @@
     },
     "reset_style_btn": {
         "message": "重置位置与样式"
+    },
+    "auto_repair_label": {
+        "message": "漏句二次補譯 (當 AI 漏答尾句時自動單獨補救)"
     }
 }

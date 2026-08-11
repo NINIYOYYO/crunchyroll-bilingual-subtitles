@@ -118,5 +118,8 @@
     },
     "reset_style_btn": {
         "message": "Reset Style & Pos"
+    },
+    "auto_repair_label": {
+        "message": "누락 대사 자막 복구 (AI 대사 누락 시 자동 재요청)"
     }
 }

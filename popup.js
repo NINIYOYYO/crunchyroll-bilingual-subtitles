@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const aiFields = document.getElementById("ai-fields");
     const engineSelect = document.getElementById("engine-select");
     const saveBtn = document.getElementById("save-btn");
@@ -14,6 +14,7 @@
     document.getElementById("label-api-key").textContent = chrome.i18n.getMessage("api_key_label");
     document.getElementById("label-effort").textContent = chrome.i18n.getMessage("reasoning_effort_label");
     document.getElementById("label-streaming").textContent = chrome.i18n.getMessage("streaming_label");
+    document.getElementById("label-autorepair").textContent = chrome.i18n.getMessage("auto_repair_label");
     document.getElementById("label-batch").textContent = chrome.i18n.getMessage("batch_size_label");
     document.getElementById("label-concurrency").textContent = chrome.i18n.getMessage("concurrency_label");
     saveBtn.textContent = chrome.i18n.getMessage("save_button");
@@ -65,7 +66,8 @@
         batchSize: 10,
         concurrency: 3,
         reasoningEnabled: true,
-        streaming: true
+        streaming: true,
+        autoRepairEnabled: true
     }, (s) => {
         langSelect.value = s.secondLang || "zh-CN";
         modeSelect.value = s.transMode || "fallback";
@@ -77,6 +79,7 @@
         document.getElementById("concurrency").value = s.concurrency || 3;
         document.getElementById("reasoning-toggle").checked = s.reasoningEnabled !== false;
         document.getElementById("streaming-toggle").checked = s.streaming !== false;
+        document.getElementById("autorepair-toggle").checked = s.autoRepairEnabled !== false;
         updateVisibility();
     });
 
@@ -93,7 +96,8 @@
             batchSize: parseInt(document.getElementById("batch-size").value) || 10,
             concurrency: parseInt(document.getElementById("concurrency").value) || 3,
             reasoningEnabled: document.getElementById("reasoning-toggle").checked,
-            streaming: document.getElementById("streaming-toggle").checked
+            streaming: document.getElementById("streaming-toggle").checked,
+            autoRepairEnabled: document.getElementById("autorepair-toggle").checked
         };
 
         saveBtn.disabled = true;

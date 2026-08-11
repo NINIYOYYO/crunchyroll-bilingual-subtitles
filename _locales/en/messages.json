@@ -119,6 +119,9 @@
     "streaming_label": {
         "message": "Real-time streaming (show translation as it generates)"
     },
+    "auto_repair_label": {
+        "message": "Auto repair missing cues (Secondary micro-retry when LLM drops lines)"
+    },
     "lang_ar_sa": {
         "message": "Arabic (ar-SA)"
     },

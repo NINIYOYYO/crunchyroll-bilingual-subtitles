@@ -118,5 +118,8 @@
     },
     "reset_style_btn": {
         "message": "Reset Style & Pos"
+    },
+    "auto_repair_label": {
+        "message": "إصلاح التسميات التوضيحية تلقائيًا (إعادة المحاولة تلقائيًا عند حذف الجمل)"
     }
 }

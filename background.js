@@ -33,45 +33,60 @@ chrome.runtime.onConnect.addListener((port) => {
 // ✨ 共享工具：构建请求体 / 严格解析 / 流式增量解析
 // ====================================================
 
+/**
+ * 辅助函数：安全提取字幕项的 ID 与文本（支持对象 { id, text } 或纯字符串）
+ */
+function getItemId(item, index) {
+    return (item && typeof item === 'object' && item.id !== undefined) ? item.id : index;
+}
+
+function getItemText(item) {
+    return (item && typeof item === 'object' && item.text !== undefined) ? item.text : String(item);
+}
+
+/**
+ * 构建发送给 LLM 的 Payload，采用全集绝对 Cue ID 锚点 `[ID:${item.id}]` 格式。
+ * 单行台词内部的换行符被转义为 ` ||| `，严格保证 1 行对 1 锚点，彻底杜绝模型重新编号引发的错位。
+ *
+ * @param {Array<Object|string>} lines - 待翻译的原文字幕数组 (对象 { id, text } 或纯字符串)。
+ * @param {Object} settings - 扩展设置。
+ * @returns {Object} 包含模型 API 请求体的 Payload 对象。
+ */
 function buildTranslationPayload(lines, settings) {
     const { secondLang, aiModel, reasoningEnabled } = settings;
-    // 默认开启推理（与改造前 medium 行为一致）；关闭时走 enabled:false 以省额度/提速
     const reasoningOn = reasoningEnabled !== false;
     const isOpenAIReason = aiModel && (aiModel.includes('o1') || aiModel.includes('o3'));
 
     let effortPrompt = "";
-
     if (!reasoningOn) {
-        // 关闭推理：明确指令模型不要思考，直接给出 JSON
-        effortPrompt = "\n[CRITICAL WARNING]: SKIP ALL REASONING. IMMEDIATELY output the final JSON object.";
+        effortPrompt = "\n[CRITICAL WARNING]: SKIP ALL REASONING. IMMEDIATELY output the final PAL-Align text.";
     }
 
-    const linesObj = {};
-    lines.forEach((line, index) => { linesObj[index] = line; });
+    // 构造物理锚点输入：[ID:${item.id}] 文本，换行符转义为 |||
+    const promptLines = lines.map((item, index) => `[ID:${getItemId(item, index)}] ${getItemText(item).replace(/\r?\n/g, ' ||| ')}`);
 
     const payload = {
         model: aiModel || "gpt-3.5-turbo",
         messages: [
             {
                 role: "system",
-                content: `You are an expert anime subtitle translator. Translate the values of the JSON object into ${secondLang}.
-CRITICAL RULES:
-1. Output ONLY a valid JSON object matching the exact keys (0, 1, 2...) of the input.
-2. DO NOT merge sentences. Keep a strict 1-to-1 mapping for every key.
-3. DO NOT output markdown formatting or \`\`\`json.
-4. NO conversational text before or after the JSON.${effortPrompt}`
+                content: `You are an expert anime subtitle translator. Translate each subtitle line into ${secondLang}.
+HARD PHYSICAL ALIGNMENT RULES:
+1. You MUST strictly preserve the exact [ID:number] physical anchor tag at the start of every line.
+2. Keep a strict 1-to-1 mapping for every ID tag. DO NOT omit any [ID:number] tag or merge lines.
+3. If a line contains ' ||| ', preserve the ' ||| ' separator in the translated line!
+4. Format output strictly line by line without markdown formatting or code blocks:
+[ID:0] translated text 0
+[ID:1] translated text 1${effortPrompt}`
             },
-            { role: "user", content: JSON.stringify(linesObj) }
+            { role: "user", content: promptLines.join('\n') }
         ],
         temperature: 0.1
     };
 
     if (isOpenAIReason) {
-        // OpenAI o1/o3 系列不支持 reasoning:{enabled:false}，只用 reasoning_effort 控制
         payload.reasoning_effort = reasoningOn ? "medium" : "low";
     } else if (!reasoningOn) {
-        // ✨ OpenRouter 推理控制：enabled:false 由各 provider 可靠生效
-        //    （Novita 等会无视 max_tokens 上限，但会遵守 enabled:false）
         payload.reasoning = { enabled: false };
     }
 
@@ -88,74 +103,208 @@ function buildRequestHeaders(apiKey) {
     return headers;
 }
 
-// 严格解析模型最终输出：返回完整对齐的数组，任何 key 缺失/为空则抛错触发重试
-function parseModelTranslations(content, lines) {
+/**
+ * 解析 PAL-Align 物理锚点输出 `[ID:${item.id}] 译文`。
+ * 精确按照 item.id 匹配，杜绝由于模型跳过前几句引发的索引归零移位。
+ *
+ * @param {string} content - 模型输出文本。
+ * @param {Array<Object|string>} lines - 原始原文数组。
+ * @returns {Object} { translatedArray, validKeysCount, missingIndices, parsedMap }
+ */
+function parsePalAlignOutput(content, lines) {
+    const cleaned = content.trim().replace(/```[a-z]*/gi, '').trim();
+    const translatedArray = lines.map(item => getItemText(item));
+    const missingIndices = [];
+    const parsedMap = {};
+
+    const rawLines = cleaned.split(/\r?\n/);
+    let currentCid = null;
+
+    for (const rawLine of rawLines) {
+        const lineStr = rawLine.trim();
+        if (!lineStr) continue;
+
+        const match = lineStr.match(/^\[ID:(\d+)\]\s*(.*)$/);
+        if (match) {
+            currentCid = parseInt(match[1], 10);
+            const val = match[2].trim().replace(/\s*\|\|\|\s*/g, '\n');
+            if (val) parsedMap[currentCid] = val;
+        } else if (currentCid !== null) {
+            const valClean = lineStr.replace(/\s*\|\|\|\s*/g, '\n');
+            const existing = parsedMap[currentCid] || "";
+            parsedMap[currentCid] = existing ? `${existing}\n${valClean}` : valClean;
+        }
+    }
+
+    let validKeysCount = 0;
+    for (let i = 0; i < lines.length; i++) {
+        const id = getItemId(lines[i], i);
+        if (parsedMap[id] !== undefined && String(parsedMap[id]).trim() !== "") {
+            translatedArray[i] = String(parsedMap[id]).trim();
+            validKeysCount++;
+        } else {
+            missingIndices.push(i);
+        }
+    }
+
+    return { translatedArray, validKeysCount, missingIndices, parsedMap };
+}
+
+/**
+ * 兼容性 JSON 解析器（当模型忽略物理锚点直接返回 JSON 时的降级解析）。
+ *
+ * @param {string} content - 模型输出文本。
+ * @param {Array<Object|string>} lines - 原始原文数组。
+ * @returns {Object} { translatedArray, validKeysCount, missingIndices }
+ */
+function parseJsonTranslations(content, lines) {
     const cleaned = content.trim().replace(/```json/gi, '').replace(/```/g, '').trim();
-    const translatedArray = new Array(lines.length).fill(chrome.i18n.getMessage("toast_translation_missing") || "[Translation missing]");
+    const translatedArray = lines.map(item => getItemText(item));
+    const missingIndices = [];
 
     const first = cleaned.indexOf('{');
     const last = cleaned.lastIndexOf('}');
-
     if (first === -1 || last === -1 || last <= first) {
-        throw new Error("Model did not return valid JSON object containing { }");
+        return { translatedArray, validKeysCount: 0, missingIndices: lines.map((_, i) => i) };
     }
 
-    const parsedObj = JSON.parse(cleaned.substring(first, last + 1));
-    let validKeysCount = 0;
+    try {
+        const parsedObj = JSON.parse(cleaned.substring(first, last + 1));
+        let validKeysCount = 0;
 
-    for (let i = 0; i < lines.length; i++) {
-        const translatedLine = parsedObj[i] || parsedObj[String(i)];
-        if (translatedLine !== undefined && translatedLine !== null && String(translatedLine).trim() !== "") {
-            translatedArray[i] = translatedLine;
-            validKeysCount++;
+        for (let i = 0; i < lines.length; i++) {
+            const id = getItemId(lines[i], i);
+            const translatedLine = parsedObj[id] !== undefined ? parsedObj[id] : (parsedObj[i] !== undefined ? parsedObj[i] : parsedObj[String(i)]);
+            if (translatedLine !== undefined && translatedLine !== null && String(translatedLine).trim() !== "") {
+                translatedArray[i] = String(translatedLine).trim();
+                validKeysCount++;
+            } else {
+                missingIndices.push(i);
+            }
         }
+        return { translatedArray, validKeysCount, missingIndices };
+    } catch (e) {
+        return { translatedArray, validKeysCount: 0, missingIndices: lines.map((_, i) => i) };
     }
-
-    if (validKeysCount < lines.length) {
-        throw new Error(`LLM alignment failed: expected ${lines.length} keys, but only matched ${validKeysCount}`);
-    }
-
-    return translatedArray;
 }
 
-// ✨ 流式增量解析：模型仍在生成时，也能尽量提取出已完成/进行中的 key-value
-// 对于尚未闭合引号的 value，返回截至目前已生成的部分文本（用于实时显示）
+/**
+ * 统一解析入口：优先走 PAL-Align 物理锚点解析，失败则降级走 JSON 解析。
+ * 包含软卡点阈值判断。
+ *
+ * @param {string} content - 模型响应文本。
+ * @param {Array<string>} lines - 原始原文数组。
+ * @returns {Object} { translatedArray, missingIndices }
+ */
+function parseModelTranslations(content, lines) {
+    let res = parsePalAlignOutput(content, lines);
+    if (res.validKeysCount === 0) {
+        res = parseJsonTranslations(content, lines);
+    }
+
+    const minRequiredKeys = Math.max(1, Math.ceil(lines.length * 0.6));
+    if (res.validKeysCount < minRequiredKeys) {
+        throw new Error(`LLM alignment failed: expected at least ${minRequiredKeys} keys, but only matched ${res.validKeysCount}`);
+    }
+
+    return res;
+}
+
+/**
+ * 方案二：漏句增量二次补译 (Incremental Repair Batch)。
+ * 当主批次成功翻译了大部分台词但遗漏了少数尾句/漏行 (missingIndices) 时，
+ * 触发一次极小的增量补救 API 请求，单独补译漏掉的这几行。
+ *
+ * @param {Array<number>} missingIndices - 缺失句在原数组中的索引。
+ * @param {Array<string>} lines - 原始台词数组。
+ * @param {Object} settings - 扩展配置。
+ * @returns {Promise<Object>} { [origIndex]: repairedText } 补译字典。
+ */
+async function repairMissingCues(missingIndices, lines, settings) {
+    if (!missingIndices || missingIndices.length === 0) return {};
+    // 如果缺失行超过 40%，说明整体质量差，交给主重试循环，不进行微型增量补译
+    if (missingIndices.length > Math.ceil(lines.length * 0.4)) return {};
+
+    const repairLines = missingIndices.map(idx => lines[idx]);
+    const payload = buildTranslationPayload(repairLines, settings);
+    const headers = buildRequestHeaders(settings.apiKey);
+
+    try {
+        const res = await fetch(settings.apiUrl, { method: 'POST', headers, body: JSON.stringify(payload) });
+        if (!res.ok) return {};
+        const data = await res.json();
+        const content = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
+        if (!content) return {};
+
+        const { translatedArray, validKeysCount } = parsePalAlignOutput(content, repairLines);
+        const repairedMap = {};
+
+        if (validKeysCount > 0) {
+            missingIndices.forEach((origIndex, i) => {
+                if (translatedArray[i] && translatedArray[i] !== repairLines[i]) {
+                    repairedMap[origIndex] = translatedArray[i];
+                }
+            });
+        }
+        return repairedMap;
+    } catch (e) {
+        return {};
+    }
+}
+
+/**
+ * 流式增量解析器：按 `[ID:X]` 物理锚点逐行提取流式文本，用于实时上屏。
+ *
+ * @param {string} content - 累积的流式文本。
+ * @param {number} count - 预期行数。
+ * @returns {Object} { [cid]: text }
+ */
 function extractPartialTranslations(content, count) {
     const result = {};
-    const text = content.replace(/```json/gi, '').replace(/```/g, '');
-    const objStart = text.indexOf('{');
-    if (objStart === -1) return result;
+    const cleaned = content.replace(/```[a-z]*/gi, '');
 
-    const objEnd = text.lastIndexOf('}');
-    const sub = objEnd > objStart ? text.slice(objStart, objEnd + 1) : text.slice(objStart);
+    // 优先匹配 [ID:X] 锚点
+    const regex = /\[ID:(\d+)\]\s*([^\r\n]*)/g;
+    let match;
+    let foundAnchors = false;
 
-    for (let i = 0; i < count; i++) {
-        const key = `"${i}"`;
-        const ki = sub.indexOf(key);
-        if (ki === -1) continue;
-
-        let p = ki + key.length;
-        while (p < sub.length && sub[p] !== ':') p++;
-        if (p >= sub.length) continue;
-        p++; // skip ':'
-        while (p < sub.length && (sub[p] === ' ' || sub[p] === '\t')) p++;
-        if (sub[p] !== '"') continue; // value 还未开始
-        p++; // 跳过开头引号
-
-        let val = '';
-        while (p < sub.length) {
-            const c = sub[p];
-            if (c === '\\') {
-                val += sub[p] + (sub[p + 1] || '');
-                p += 2;
-                continue;
-            }
-            if (c === '"') break; // 引号闭合 -> 该 value 已完成
-            val += c;
-            p++;
+    while ((match = regex.exec(cleaned)) !== null) {
+        foundAnchors = true;
+        const cid = parseInt(match[1], 10);
+        if (cid < count) {
+            const val = match[2].trim().replace(/\s*\|\|\|\s*/g, '\n');
+            result[cid] = val;
         }
-        result[i] = val;
     }
+
+    // 若流式文本中尚未出现 [ID:X]，降级走 JSON 边界匹配
+    if (!foundAnchors) {
+        for (let i = 0; i < count; i++) {
+            const keyPattern = new RegExp(`"${i}"\\s*:`);
+            const matchJson = keyPattern.exec(cleaned);
+            if (!matchJson) continue;
+
+            let p = matchJson.index + matchJson[0].length;
+            while (p < cleaned.length && (cleaned[p] === ' ' || cleaned[p] === '\t' || cleaned[p] === '\r' || cleaned[p] === '\n')) p++;
+            if (cleaned[p] !== '"') continue;
+            p++;
+
+            let val = '';
+            while (p < cleaned.length) {
+                const c = cleaned[p];
+                if (c === '\\') {
+                    val += cleaned[p] + (cleaned[p + 1] || '');
+                    p += 2;
+                    continue;
+                }
+                if (c === '"') break;
+                val += c;
+                p++;
+            }
+            result[i] = val;
+        }
+    }
+
     return result;
 }
 
@@ -194,7 +343,19 @@ async function handleBatchTranslation(lines, settings) {
                 }
 
                 const content = (data.choices[0].message.content || '').trim();
-                const translatedArray = parseModelTranslations(content, lines);
+                const parsedRes = parseModelTranslations(content, lines);
+                let translatedArray = parsedRes.translatedArray;
+
+                const autoRepairOn = settings.autoRepairEnabled !== false;
+                // ✨ 方案二：漏句增量二次补译 (用户可选开启，当模型漏掉尾句或少数 Cue 时自动救援)
+                if (autoRepairOn && parsedRes.missingIndices && parsedRes.missingIndices.length > 0) {
+                    const repairedMap = await repairMissingCues(parsedRes.missingIndices, lines, settings);
+                    Object.keys(repairedMap).forEach(idxStr => {
+                        const idx = parseInt(idxStr, 10);
+                        translatedArray[idx] = repairedMap[idx];
+                    });
+                }
+
                 return translatedArray;
 
             } catch (e) {
@@ -370,14 +531,25 @@ async function handleStreamTranslation(lines, settings, port) {
             }
 
             // 最终解析：优先用 content（更干净），否则回退到 content + reasoning 组合
-            // （tencent/hy3 等模型把答案塞进 reasoning 字段，content 为空）
-            let translatedArray = null;
+            let parsedRes = null;
             if (fullContent) {
-                try { translatedArray = parseModelTranslations(fullContent, lines); } catch (e) { translatedArray = null; }
+                try { parsedRes = parseModelTranslations(fullContent, lines); } catch (e) { parsedRes = null; }
             }
-            if (!translatedArray) {
-                translatedArray = parseModelTranslations(streamedText(), lines);
+            if (!parsedRes) {
+                parsedRes = parseModelTranslations(streamedText(), lines);
             }
+            let translatedArray = parsedRes.translatedArray;
+
+            const autoRepairOn = settings.autoRepairEnabled !== false;
+            // ✨ 方案二：漏句增量二次补译 (用户可选开启)
+            if (autoRepairOn && parsedRes.missingIndices && parsedRes.missingIndices.length > 0) {
+                const repairedMap = await repairMissingCues(parsedRes.missingIndices, lines, settings);
+                Object.keys(repairedMap).forEach(idxStr => {
+                    const idx = parseInt(idxStr, 10);
+                    translatedArray[idx] = repairedMap[idx];
+                });
+            }
+
             port.postMessage({ type: 'done', success: true, translations: translatedArray });
             return;
 

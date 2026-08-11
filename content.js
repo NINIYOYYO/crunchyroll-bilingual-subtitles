@@ -17,6 +17,7 @@ const DEFAULT_SETTINGS = {
     concurrency: 3,
     reasoningEnabled: true,
     streaming: true,
+    autoRepairEnabled: true,
     subColor: "",
     subBgOpacity: 65,
     subTop: "auto",
@@ -172,6 +173,15 @@ async function initDualSubs(detail, settings) {
 }
 
 let consecutiveErrors = 0;
+let lastErrorTime = 0;
+
+/**
+ * 发送批量 AI 翻译请求，带有连接失败与状态异常捕获。
+ *
+ * @param {Array<string>} linesArray - 原文台词数组。
+ * @param {Object} settings - 扩展用户配置。
+ * @returns {Promise<Array<string>>} 包含译文的 Promise 数组。
+ */
 async function fetchAIBatchTranslation(linesArray, settings) {
     return new Promise((resolve) => {
         chrome.runtime.sendMessage({ 
@@ -181,7 +191,8 @@ async function fetchAIBatchTranslation(linesArray, settings) {
         }, (response) => {
             if (chrome.runtime.lastError) {
                 consecutiveErrors++;
-                resolve(linesArray.map(() => chrome.i18n.getMessage("toast_connection_lost")));
+                lastErrorTime = Date.now();
+                resolve(linesArray.map(line => line)); // 失败时回退为原文，保证连续性
                 return;
             }
             if (response && response.success) {
@@ -192,8 +203,9 @@ async function fetchAIBatchTranslation(linesArray, settings) {
                 resolve(response.data);
             } else {
                 consecutiveErrors++;
+                lastErrorTime = Date.now();
                 showToast(chrome.i18n.getMessage("toast_api_error"), true);
-                resolve(linesArray.map(() => chrome.i18n.getMessage("toast_translation_missing")));
+                resolve(linesArray.map(line => line)); // 失败时回退为原文
             }
         });
     });
@@ -225,7 +237,7 @@ function openTranslationStream(linesArray, settings, callbacks) {
 }
 
 function parseVTT(vttText) {
-    const lines = vttText.split(/\r?\n/); const result =[]; let i = 0;
+    const lines = vttText.split(/\r?\n/); const result =[]; let i = 0; let cueCounter = 0;
     const timeToSeconds = (timeStr) => {
         const parts = timeStr.trim().split(':'); let secs = 0;
         if (parts.length === 3) secs = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseFloat(parts[2]);
@@ -243,14 +255,14 @@ function parseVTT(vttText) {
                 if (cleanLine) text += (text ? '\n' : '') + cleanLine;
                 i++;
             }
-            if (text) result.push({ start, end, text });
+            if (text) result.push({ cueId: cueCounter++, start, end, text });
         } else i++;
     }
     return result;
 }
 
 function parseASS(assText) {
-    const lines = assText.split(/\r?\n/); const result =[];
+    const lines = assText.split(/\r?\n/); const result =[]; let cueCounter = 0;
     const timeToSeconds = (timeStr) => {
         if (!timeStr) return 0; const parts = timeStr.split(':');
         return (parseFloat(parts[0]) || 0) * 3600 + (parseFloat(parts[1]) || 0) * 60 + (parseFloat(parts[2]) || 0);
@@ -259,7 +271,7 @@ function parseASS(assText) {
         if (!line.startsWith('Dialogue:')) continue;
         const parts = line.split(','); if (parts.length < 10) continue;
         const cleanText = parts.slice(9).join(',').replace(/\{[^}]+\}/g, '').replace(/\\N/g, '\n').trim();
-        if (cleanText) result.push({ start: timeToSeconds(parts[1]), end: timeToSeconds(parts[2]), text: cleanText });
+        if (cleanText) result.push({ cueId: cueCounter++, start: timeToSeconds(parts[1]), end: timeToSeconds(parts[2]), text: cleanText });
     }
     return result;
 }
@@ -430,27 +442,27 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
     const streamingCache = {}; // source line -> 进行中的部分译文（实时显示用）
 
     let currentDisplayedSourceText = "";
-    let currentActiveLines = []; // 当前正在显示的字幕行（保留行内 \n，用于缓存 key 匹配）
+    let currentActiveSubs = []; // 当前正在显示的 Cue 对象数组
 
     const inFlight = new Set();
     const BATCH_SIZE = settings.batchSize || 10;
     const MAX_CONCURRENCY = settings.concurrency || 3;
     let isPreloading = false;
 
-    // ✨ 渲染当前正在显示的字幕行：优先用最终译文，其次用流式中的部分译文，未开始则显示省略号占位
-    // 译文内部的真实换行(\n)转为 <br>，保证多行字幕正确换行
+    // ✨ 渲染当前正在显示的字幕行：根据 cueId 绝对锚定检索，彻底杜绝错位
     const renderActive = () => {
         if (!currentDisplayedSourceText) {
             textElement.style.setProperty('display', 'none', 'important');
             textElement.innerHTML = '';
             return;
         }
-        const lines = currentActiveLines;
-        // 译文内部换行 -> <br>：同时处理真正的换行符(0x0A) 与流式过程中模型打出的字面 "\n" 两字符
+        const activeCues = currentActiveSubs;
         const fmt = (t) => t.replace(/\n/g, '<br>').replace(/\\n/g, '<br>');
-        const parts = lines.map(line => {
-            if (translationCache[line]) return fmt(translationCache[line]);
-            const sp = streamingCache[line];
+        const parts = activeCues.map(sub => {
+            const id = sub.cueId !== undefined ? sub.cueId : sub.text;
+            if (translationCache[id]) return fmt(translationCache[id]);
+            if (translationCache[sub.text]) return fmt(translationCache[sub.text]);
+            const sp = streamingCache[id] || streamingCache[sub.text];
             if (sp != null) return fmt(sp) + '▌'; // 仍在生成中，加光标提示
             return `<span style="color:#888;font-size:16px;">…</span>`;
         });
@@ -458,37 +470,54 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
         textElement.style.setProperty('display', 'inline-block', 'important');
     };
 
-    // ✨ 统一的批次请求：流式模式走 Port 实时回传；非流式/Google 走原批量逻辑
+    // ✨ 统一的批次请求：传递带绝对 cueId 的对象数组，流式/批量统一绑定
     function requestBatch(chunk) {
-        chunk.forEach(t => inFlight.add(t));
+        chunk.forEach(item => {
+            const key = item && item.id !== undefined ? item.id : item;
+            inFlight.add(key);
+        });
 
         if (streamingEnabled) {
             return new Promise((resolve) => {
                 openTranslationStream(chunk, settings, {
                     onPartial: (tr) => {
-                        const activeLines = currentActiveLines;
+                        const activeIds = currentActiveSubs.map(s => s.cueId !== undefined ? s.cueId : s.text);
                         let hitsActive = false;
                         Object.keys(tr).forEach(k => {
-                            const line = chunk[Number(k)];
-                            if (line != null) {
-                                streamingCache[line] = tr[k];
-                                if (activeLines.includes(line)) hitsActive = true;
+                            const parsedId = Number(k);
+                            const item = chunk.find(c => (c && c.id === parsedId)) || chunk[parsedId];
+                            if (item != null) {
+                                const key = item.id !== undefined ? item.id : item;
+                                streamingCache[key] = tr[k];
+                                if (activeIds.includes(key)) hitsActive = true;
                             }
                         });
                         if (hitsActive) renderActive();
                     },
                     onDone: (data, success) => {
-                        chunk.forEach(t => inFlight.delete(t));
+                        chunk.forEach(item => {
+                            const key = item && item.id !== undefined ? item.id : item;
+                            inFlight.delete(key);
+                        });
                         if (success && data) {
                             consecutiveErrors = 0;
                             data.forEach((t, i) => {
-                                const line = chunk[i];
-                                if (line != null) { translationCache[line] = t; delete streamingCache[line]; }
+                                const item = chunk[i];
+                                if (item != null) {
+                                    const key = item.id !== undefined ? item.id : item;
+                                    translationCache[key] = t;
+                                    if (item.text) translationCache[item.text] = t;
+                                    delete streamingCache[key];
+                                }
                             });
                         } else {
                             consecutiveErrors++;
+                            lastErrorTime = Date.now();
                             showToast(chrome.i18n.getMessage("toast_api_error"), true);
-                            chunk.forEach(t => delete streamingCache[t]);
+                            chunk.forEach(item => {
+                                const key = item && item.id !== undefined ? item.id : item;
+                                delete streamingCache[key];
+                            });
                         }
                         if (currentDisplayedSourceText) renderActive();
                         resolve(data);
@@ -499,19 +528,41 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
 
         return fetchAIBatchTranslation(chunk, settings).then(data => {
             data.forEach((t, i) => {
-                const line = chunk[i];
-                if (line != null) translationCache[line] = t;
+                const item = chunk[i];
+                if (item != null) {
+                    const key = item.id !== undefined ? item.id : item;
+                    translationCache[key] = t;
+                    if (item.text) translationCache[item.text] = t;
+                }
             });
-            chunk.forEach(t => inFlight.delete(t));
+            chunk.forEach(item => {
+                const key = item && item.id !== undefined ? item.id : item;
+                inFlight.delete(key);
+            });
             if (currentDisplayedSourceText) renderActive();
             return data;
         }).catch(() => {
-            chunk.forEach(t => inFlight.delete(t));
+            chunk.forEach(item => {
+                const key = item && item.id !== undefined ? item.id : item;
+                inFlight.delete(key);
+            });
         });
     }
 
+    /**
+     * 连续预加载逻辑：按绝对 cueId 进行过滤预载。
+     */
     const runContinuousPreload = async () => {
         if (!useAI || isPreloading) return;
+
+        if (consecutiveErrors > 3) {
+            if (Date.now() - lastErrorTime > 10000) {
+                consecutiveErrors = 0;
+            } else {
+                return;
+            }
+        }
+
         isPreloading = true;
 
         while (consecutiveErrors <= 3) {
@@ -523,19 +574,20 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
             if (currentIndex === -1) break;
 
             const futureSubs = parsedSubs.slice(currentIndex);
-            const uncachedLines =[...new Set(
-                futureSubs.map(s => s.text).filter(t => t && !translationCache[t] && !inFlight.has(t))
-            )];
+            const uncachedCues = futureSubs.filter(s => {
+                const key = s.cueId !== undefined ? s.cueId : s.text;
+                return s.text && !translationCache[key] && !inFlight.has(key);
+            });
 
-            if (uncachedLines.length === 0) break;
+            if (uncachedCues.length === 0) break;
 
-            const targetLines = uncachedLines.slice(0, BATCH_SIZE * MAX_CONCURRENCY);
-            const chunks =[];
-            for (let i = 0; i < targetLines.length; i += BATCH_SIZE) {
-                chunks.push(targetLines.slice(i, i + BATCH_SIZE));
+            const targetCues = uncachedCues.slice(0, BATCH_SIZE * MAX_CONCURRENCY);
+            const chunks = [];
+            for (let i = 0; i < targetCues.length; i += BATCH_SIZE) {
+                const batchItems = targetCues.slice(i, i + BATCH_SIZE).map(c => ({ id: c.cueId, text: c.text }));
+                chunks.push(batchItems);
             }
 
-            // 流式模式下预载不阻塞渲染：直接 fire，逐字结果会经 onPartial 实时上屏
             const promises = chunks.map(chunk => requestBatch(chunk));
 
             await Promise.all(promises);
@@ -559,19 +611,22 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
 
             if (currentDisplayedSourceText !== combinedSourceText) {
                 currentDisplayedSourceText = combinedSourceText;
-                currentActiveLines = lines;
-                renderActive(); // 立即反映当前已有译文 / 部分译文 / 占位
+                currentActiveSubs = activeSubs;
+                renderActive();
 
-                // 触发尚未就绪的行的翻译（流式模式下会逐字上屏）
-                const needTranslation = lines.filter(l => !translationCache[l] && !inFlight.has(l));
-                if (useAI && needTranslation.length > 0) {
-                    requestBatch(needTranslation);
+                const needTranslationCues = activeSubs.filter(s => {
+                    const key = s.cueId !== undefined ? s.cueId : s.text;
+                    return !translationCache[key] && !inFlight.has(key);
+                });
+                if (useAI && needTranslationCues.length > 0) {
+                    const batchItems = needTranslationCues.map(c => ({ id: c.cueId, text: c.text }));
+                    requestBatch(batchItems);
                 }
             }
         } else {
             if (currentDisplayedSourceText !== "") {
                 currentDisplayedSourceText = "";
-                currentActiveLines = [];
+                currentActiveSubs = [];
                 textElement.style.setProperty('display', 'none', 'important');
                 textElement.innerHTML = '';
             }

@@ -113,6 +113,9 @@
     "reasoning_effort_label": {
         "message": "推理强度 (可关闭以省额度/提速)"
     },
+    "auto_repair_label": {
+        "message": "漏句二次补译 (当 AI 漏答尾句时自动单独补救)"
+    },
     "lang_ar_sa": {
         "message": "阿拉伯语 (ar-SA)"
     },
