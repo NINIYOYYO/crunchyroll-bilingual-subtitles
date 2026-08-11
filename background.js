@@ -45,6 +45,50 @@ function getItemText(item) {
 }
 
 /**
+ * 将扩展的目标语言代码映射为发给 LLM 的清晰、无歧义的人类自然语言名称。
+ *
+ * @param {string} secondLang - 语言代码 (如 "zh-CN", "ja-JP", "tr-TR")。
+ * @returns {string} 人类自然语言名称 (如 "Simplified Chinese", "Japanese", "Turkish")。
+ */
+function getLanguageName(secondLang) {
+    const langMap = {
+        'zh-CN': 'Simplified Chinese',
+        'zh-HK': 'Traditional Chinese',
+        'en-US': 'English',
+        'ja-JP': 'Japanese',
+        'ko-KR': 'Korean',
+        'es-419': 'Spanish (Latin America)',
+        'es-ES': 'Spanish (Spain)',
+        'pt-BR': 'Portuguese (Brazil)',
+        'fr-FR': 'French',
+        'de-DE': 'German',
+        'it-IT': 'Italian',
+        'ru-RU': 'Russian',
+        'tr-TR': 'Turkish',
+        'hi-IN': 'Hindi',
+        'pl-PL': 'Polish',
+        'nl-NL': 'Dutch',
+        'sv-SE': 'Swedish',
+        'fi-FI': 'Finnish',
+        'no-NO': 'Norwegian',
+        'da-DK': 'Danish',
+        'cs-CZ': 'Czech',
+        'hu-HU': 'Hungarian',
+        'ro-RO': 'Romanian',
+        'uk-UA': 'Ukrainian',
+        'el-GR': 'Greek',
+        'he-IL': 'Hebrew',
+        'tl-PH': 'Tagalog (Filipino)',
+        'ar-SA': 'Arabic',
+        'vi-VN': 'Vietnamese',
+        'th-TH': 'Thai',
+        'id-ID': 'Indonesian',
+        'ms-MY': 'Malay'
+    };
+    return langMap[secondLang] || secondLang;
+}
+
+/**
  * 构建发送给 LLM 的 Payload，采用全集绝对 Cue ID 锚点 `[ID:${item.id}]` 格式。
  * 单行台词内部的换行符被转义为 ` ||| `，严格保证 1 行对 1 锚点，彻底杜绝模型重新编号引发的错位。
  *
@@ -56,6 +100,7 @@ function buildTranslationPayload(lines, settings) {
     const { secondLang, aiModel, reasoningEnabled } = settings;
     const reasoningOn = reasoningEnabled !== false;
     const isOpenAIReason = aiModel && (aiModel.includes('o1') || aiModel.includes('o3'));
+    const targetLangName = getLanguageName(secondLang);
 
     let effortPrompt = "";
     if (!reasoningOn) {
@@ -70,7 +115,7 @@ function buildTranslationPayload(lines, settings) {
         messages: [
             {
                 role: "system",
-                content: `You are an expert anime subtitle translator. Translate each subtitle line into ${secondLang}.
+                content: `You are an expert anime subtitle translator. Translate each subtitle line into ${targetLangName}.
 HARD PHYSICAL ALIGNMENT RULES:
 1. You MUST strictly preserve the exact [ID:number] physical anchor tag at the start of every line.
 2. Keep a strict 1-to-1 mapping for every ID tag. DO NOT omit any [ID:number] tag or merge lines.

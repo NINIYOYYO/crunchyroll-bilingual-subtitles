@@ -18,10 +18,10 @@
         "message": "推理強度（關閉可省免費額度/提速）"
     },
     "lang_en_us": {
-        "message": "英文 (en-US)"
+        "message": "英语 (en-US)"
     },
     "lang_zh_cn": {
-        "message": "簡體中文 (zh-CN)"
+        "message": "简体中文 (zh-CN)"
     },
     "effort_low": {
         "message": "低 (限制最多推理一句話)"
@@ -69,7 +69,7 @@
         "message": "Crunchyroll AI 雙語字幕 Pro"
     },
     "lang_zh_hk": {
-        "message": "繁體中文 (zh-HK)"
+        "message": "繁体中文 (zh-HK)"
     },
     "engine_google": {
         "message": "Google 免費翻譯"
@@ -133,5 +133,92 @@
     },
     "auto_repair_label": {
         "message": "漏句二次補譯 (當 AI 漏答尾句時自動單獨補救)"
+    },
+    "lang_ja_jp": {
+        "message": "日语 (ja-JP)"
+    },
+    "lang_ko_kr": {
+        "message": "韩语 (ko-KR)"
+    },
+    "lang_es_419": {
+        "message": "西班牙语 - 拉美 (es-419)"
+    },
+    "lang_es_es": {
+        "message": "西班牙语 - 西班牙 (es-ES)"
+    },
+    "lang_pt_br": {
+        "message": "葡萄牙语 - 巴西 (pt-BR)"
+    },
+    "lang_fr_fr": {
+        "message": "法语 (fr-FR)"
+    },
+    "lang_de_de": {
+        "message": "德语 (de-DE)"
+    },
+    "lang_it_it": {
+        "message": "意大利语 (it-IT)"
+    },
+    "lang_ru_ru": {
+        "message": "俄语 (ru-RU)"
+    },
+    "lang_tr_tr": {
+        "message": "土耳其语 (tr-TR)"
+    },
+    "lang_hi_in": {
+        "message": "印地语 (hi-IN)"
+    },
+    "lang_pl_pl": {
+        "message": "波兰语 (pl-PL)"
+    },
+    "lang_nl_nl": {
+        "message": "荷兰语 (nl-NL)"
+    },
+    "lang_sv_se": {
+        "message": "瑞典语 (sv-SE)"
+    },
+    "lang_fi_fi": {
+        "message": "芬兰语 (fi-FI)"
+    },
+    "lang_no_no": {
+        "message": "挪威语 (no-NO)"
+    },
+    "lang_da_dk": {
+        "message": "丹麦语 (da-DK)"
+    },
+    "lang_cs_cz": {
+        "message": "捷克语 (cs-CZ)"
+    },
+    "lang_hu_hu": {
+        "message": "匈牙利语 (hu-HU)"
+    },
+    "lang_ro_ro": {
+        "message": "罗马尼亚语 (ro-RO)"
+    },
+    "lang_uk_ua": {
+        "message": "乌克兰语 (uk-UA)"
+    },
+    "lang_el_gr": {
+        "message": "希腊语 (el-GR)"
+    },
+    "lang_he_il": {
+        "message": "希伯来语 (he-IL)"
+    },
+    "lang_tl_ph": {
+        "message": "他加禄语 (tl-PH)"
+    },
+    "lang_ar_sa": {
+        "message": "阿拉伯语 (ar-SA)"
+    },
+    "lang_vi_vn": {
+        "message": "越南语 (vi-VN)"
+    },
+    "lang_th_th": {
+        "message": "泰语 (th-TH)"
+    },
+    "lang_id_id": {
+        "message": "印度尼西亚语 (id-ID)"
+    },
+    "lang_ms_my": {
+        "message": "马来语 (ms-MY)"
     }
 }

@@ -208,5 +208,56 @@
     },
     "reset_style_btn": {
         "message": "Reset Style & Pos"
+    },
+    "lang_ja_jp": {
+        "message": "Japanese (ja-JP)"
+    },
+    "lang_ko_kr": {
+        "message": "Korean (ko-KR)"
+    },
+    "lang_tr_tr": {
+        "message": "Turkish (tr-TR)"
+    },
+    "lang_hi_in": {
+        "message": "Hindi (hi-IN)"
+    },
+    "lang_pl_pl": {
+        "message": "Polish (pl-PL)"
+    },
+    "lang_nl_nl": {
+        "message": "Dutch (nl-NL)"
+    },
+    "lang_sv_se": {
+        "message": "Swedish (sv-SE)"
+    },
+    "lang_fi_fi": {
+        "message": "Finnish (fi-FI)"
+    },
+    "lang_no_no": {
+        "message": "Norwegian (no-NO)"
+    },
+    "lang_da_dk": {
+        "message": "Danish (da-DK)"
+    },
+    "lang_cs_cz": {
+        "message": "Czech (cs-CZ)"
+    },
+    "lang_hu_hu": {
+        "message": "Hungarian (hu-HU)"
+    },
+    "lang_ro_ro": {
+        "message": "Romanian (ro-RO)"
+    },
+    "lang_uk_ua": {
+        "message": "Ukrainian (uk-UA)"
+    },
+    "lang_el_gr": {
+        "message": "Greek (el-GR)"
+    },
+    "lang_he_il": {
+        "message": "Hebrew (he-IL)"
+    },
+    "lang_tl_ph": {
+        "message": "Tagalog (tl-PH)"
     }
 }

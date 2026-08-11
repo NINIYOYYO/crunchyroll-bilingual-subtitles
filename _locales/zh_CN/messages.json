@@ -205,5 +205,56 @@
     },
     "reset_style_btn": {
         "message": "重置位置与样式"
+    },
+    "lang_ja_jp": {
+        "message": "日语 (ja-JP)"
+    },
+    "lang_ko_kr": {
+        "message": "韩语 (ko-KR)"
+    },
+    "lang_tr_tr": {
+        "message": "土耳其语 (tr-TR)"
+    },
+    "lang_hi_in": {
+        "message": "印地语 (hi-IN)"
+    },
+    "lang_pl_pl": {
+        "message": "波兰语 (pl-PL)"
+    },
+    "lang_nl_nl": {
+        "message": "荷兰语 (nl-NL)"
+    },
+    "lang_sv_se": {
+        "message": "瑞典语 (sv-SE)"
+    },
+    "lang_fi_fi": {
+        "message": "芬兰语 (fi-FI)"
+    },
+    "lang_no_no": {
+        "message": "挪威语 (no-NO)"
+    },
+    "lang_da_dk": {
+        "message": "丹麦语 (da-DK)"
+    },
+    "lang_cs_cz": {
+        "message": "捷克语 (cs-CZ)"
+    },
+    "lang_hu_hu": {
+        "message": "匈牙利语 (hu-HU)"
+    },
+    "lang_ro_ro": {
+        "message": "罗马尼亚语 (ro-RO)"
+    },
+    "lang_uk_ua": {
+        "message": "乌克兰语 (uk-UA)"
+    },
+    "lang_el_gr": {
+        "message": "希腊语 (el-GR)"
+    },
+    "lang_he_il": {
+        "message": "希伯来语 (he-IL)"
+    },
+    "lang_tl_ph": {
+        "message": "他加禄语 (tl-PH)"
     }
 }

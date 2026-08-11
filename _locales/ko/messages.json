@@ -18,10 +18,10 @@
         "message": "추론 강도（끄면 무료 토큰 절약·빠르게）"
     },
     "lang_en_us": {
-        "message": "영어 (en-US)"
+        "message": "English (en-US)"
     },
     "lang_zh_cn": {
-        "message": "간체 중국어 (zh-CN)"
+        "message": "Simplified Chinese (zh-CN)"
     },
     "effort_low": {
         "message": "낮음 (한 문장만 추론)"
@@ -66,7 +66,7 @@
         "message": "Crunchyroll AI 이중 자막 Pro"
     },
     "lang_zh_hk": {
-        "message": "번체 중국어 (zh-HK)"
+        "message": "Traditional Chinese (zh-HK)"
     },
     "engine_google": {
         "message": "Google 무료 번역"
@@ -121,5 +121,92 @@
     },
     "auto_repair_label": {
         "message": "누락 대사 자막 복구 (AI 대사 누락 시 자동 재요청)"
+    },
+    "lang_ja_jp": {
+        "message": "Japanese (ja-JP)"
+    },
+    "lang_ko_kr": {
+        "message": "Korean (ko-KR)"
+    },
+    "lang_es_419": {
+        "message": "Spanish - LA (es-419)"
+    },
+    "lang_es_es": {
+        "message": "Spanish - ES (es-ES)"
+    },
+    "lang_pt_br": {
+        "message": "Portuguese - BR (pt-BR)"
+    },
+    "lang_fr_fr": {
+        "message": "French (fr-FR)"
+    },
+    "lang_de_de": {
+        "message": "German (de-DE)"
+    },
+    "lang_it_it": {
+        "message": "Italian (it-IT)"
+    },
+    "lang_ru_ru": {
+        "message": "Russian (ru-RU)"
+    },
+    "lang_tr_tr": {
+        "message": "Turkish (tr-TR)"
+    },
+    "lang_hi_in": {
+        "message": "Hindi (hi-IN)"
+    },
+    "lang_pl_pl": {
+        "message": "Polish (pl-PL)"
+    },
+    "lang_nl_nl": {
+        "message": "Dutch (nl-NL)"
+    },
+    "lang_sv_se": {
+        "message": "Swedish (sv-SE)"
+    },
+    "lang_fi_fi": {
+        "message": "Finnish (fi-FI)"
+    },
+    "lang_no_no": {
+        "message": "Norwegian (no-NO)"
+    },
+    "lang_da_dk": {
+        "message": "Danish (da-DK)"
+    },
+    "lang_cs_cz": {
+        "message": "Czech (cs-CZ)"
+    },
+    "lang_hu_hu": {
+        "message": "Hungarian (hu-HU)"
+    },
+    "lang_ro_ro": {
+        "message": "Romanian (ro-RO)"
+    },
+    "lang_uk_ua": {
+        "message": "Ukrainian (uk-UA)"
+    },
+    "lang_el_gr": {
+        "message": "Greek (el-GR)"
+    },
+    "lang_he_il": {
+        "message": "Hebrew (he-IL)"
+    },
+    "lang_tl_ph": {
+        "message": "Tagalog (tl-PH)"
+    },
+    "lang_ar_sa": {
+        "message": "Arabic (ar-SA)"
+    },
+    "lang_vi_vn": {
+        "message": "Vietnamese (vi-VN)"
+    },
+    "lang_th_th": {
+        "message": "Thai (th-TH)"
+    },
+    "lang_id_id": {
+        "message": "Indonesian (id-ID)"
+    },
+    "lang_ms_my": {
+        "message": "Malay (ms-MY)"
     }
 }
