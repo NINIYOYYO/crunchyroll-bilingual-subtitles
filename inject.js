@@ -49,14 +49,22 @@
             }
         }
 
-        if (reqUrl && reqUrl.includes('/playback/v3/') && reqUrl.includes('/play')) {
-            const clone = response.clone(); // <--- Fix: Only clone when needed
+        const isPlaybackV3 = reqUrl.includes('/playback/v3/') && reqUrl.includes('/play');
+        const isPlaybackV2 = reqUrl.includes('/playback/v2/manifest/');
+
+        if (reqUrl && (isPlaybackV3 || isPlaybackV2)) {
+            const clone = response.clone();
             const retryKey = reqUrl;
 
             clone.json().then(data => {
                 if (data && (data.subtitles || data.captions)) {
+                    let mediaId = '';
+                    const v2Match = reqUrl.match(/\/playback\/v2\/manifest\/([^\/\?]+)/);
+                    if (v2Match) mediaId = v2Match[1];
+
                     const payload = JSON.stringify({
                         url: reqUrl,
+                        mediaId: mediaId,
                         options: { headers: safeHeaders },
                         data: data
                     });

@@ -26,6 +26,66 @@ const DEFAULT_SETTINGS = {
 };
 
 const translationCache = {};
+let activeEpisodeSession = {
+    id: 1,
+    trackUrl: '',
+    isCancelled: false
+};
+
+/**
+ * 原子化重置与清理：彻底清理上一集残留的翻译缓存、在途请求与事件监听，防止切集串字幕
+ */
+function resetSubtitlePipeline() {
+    activeEpisodeSession.isCancelled = true;
+    activeEpisodeSession = {
+        id: Date.now() + Math.random(),
+        trackUrl: '',
+        isCancelled: false
+    };
+
+    Object.keys(translationCache).forEach(k => delete translationCache[k]);
+    consecutiveErrors = 0;
+    lastErrorTime = 0;
+
+    const textEl = document.getElementById('my-cr-dual-sub-text');
+    if (textEl) {
+        textEl.innerHTML = '';
+        textEl.style.setProperty('display', 'none', 'important');
+    }
+
+    const videos = document.querySelectorAll('video');
+    videos.forEach(v => {
+        if (v._dualSubListener) {
+            v.removeEventListener('timeupdate', v._dualSubListener);
+            delete v._dualSubListener;
+        }
+    });
+}
+
+// 信号 A：前端点击即时响应（0ms 清屏与作废旧请求）
+document.addEventListener('click', (e) => {
+    const isEpisodeNav = e.target.closest('[data-testid="next-episode-button"]') ||
+                         e.target.closest('.erc-prev-next-episode') ||
+                         e.target.closest('a[href*="/watch/"]') ||
+                         e.target.closest('[data-t="see-more-episodes-btn"]');
+    if (isEpisodeNav) {
+        lastProcessedUrl = '';
+        resetSubtitlePipeline();
+    }
+}, true);
+
+// 信号 B：SPA 路由变化感知
+let currentPathname = location.pathname;
+const checkPathChange = () => {
+    if (location.pathname !== currentPathname) {
+        currentPathname = location.pathname;
+        lastProcessedUrl = '';
+        resetSubtitlePipeline();
+    }
+};
+window.addEventListener('popstate', checkPathChange);
+window.addEventListener('hashchange', checkPathChange);
+setInterval(checkPathChange, 500);
 
 (function injectOnce() {
     if (window.__CR_DUAL_SUBS_INJECTED__) return;
@@ -160,6 +220,11 @@ async function initDualSubs(detail, settings) {
     if (!targetTrack) {
         showToast(transMode === 'native' ? chrome.i18n.getMessage("toast_no_official_subs") : chrome.i18n.getMessage("toast_parse_failed"));
         return;
+    }
+
+    if (targetTrack.url !== activeEpisodeSession.trackUrl) {
+        resetSubtitlePipeline();
+        activeEpisodeSession.trackUrl = targetTrack.url;
     }
 
     try {
@@ -403,6 +468,8 @@ function setupInPlayerControls(playerContainer, settings) {
 }
 
 function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, settings) {
+    const currentSessionId = activeEpisodeSession.id;
+
     let subContainer = document.getElementById('my-cr-dual-sub-container');
     if (!subContainer) {
         subContainer = document.createElement('div');
@@ -451,6 +518,7 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
 
     // ✨ 渲染当前正在显示的字幕行：根据 cueId 绝对锚定检索，彻底杜绝错位
     const renderActive = () => {
+        if (currentSessionId !== activeEpisodeSession.id || activeEpisodeSession.isCancelled) return;
         if (!currentDisplayedSourceText) {
             textElement.style.setProperty('display', 'none', 'important');
             textElement.innerHTML = '';
@@ -472,6 +540,8 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
 
     // ✨ 统一的批次请求：传递带绝对 cueId 的对象数组，流式/批量统一绑定
     function requestBatch(chunk) {
+        if (currentSessionId !== activeEpisodeSession.id || activeEpisodeSession.isCancelled) return Promise.resolve();
+
         chunk.forEach(item => {
             const key = item && item.id !== undefined ? item.id : item;
             inFlight.add(key);
@@ -481,6 +551,7 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
             return new Promise((resolve) => {
                 openTranslationStream(chunk, settings, {
                     onPartial: (tr) => {
+                        if (currentSessionId !== activeEpisodeSession.id || activeEpisodeSession.isCancelled) return;
                         const activeIds = currentActiveSubs.map(s => s.cueId !== undefined ? s.cueId : s.text);
                         let hitsActive = false;
                         Object.keys(tr).forEach(k => {
@@ -495,6 +566,10 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
                         if (hitsActive) renderActive();
                     },
                     onDone: (data, success) => {
+                        if (currentSessionId !== activeEpisodeSession.id || activeEpisodeSession.isCancelled) {
+                            resolve(data);
+                            return;
+                        }
                         chunk.forEach(item => {
                             const key = item && item.id !== undefined ? item.id : item;
                             inFlight.delete(key);
@@ -527,6 +602,7 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
         }
 
         return fetchAIBatchTranslation(chunk, settings).then(data => {
+            if (currentSessionId !== activeEpisodeSession.id || activeEpisodeSession.isCancelled) return data;
             data.forEach((t, i) => {
                 const item = chunk[i];
                 if (item != null) {
@@ -550,10 +626,11 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
     }
 
     /**
-     * 连续预加载逻辑：按绝对 cueId 进行过滤预载。
+     * 连续预加载逻辑：按绝对 cueId 进行过滤预载，绑定 SessionId。
      */
     const runContinuousPreload = async () => {
         if (!useAI || isPreloading) return;
+        if (currentSessionId !== activeEpisodeSession.id || activeEpisodeSession.isCancelled) return;
 
         if (consecutiveErrors > 3) {
             if (Date.now() - lastErrorTime > 10000) {
@@ -566,6 +643,7 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
         isPreloading = true;
 
         while (consecutiveErrors <= 3) {
+            if (currentSessionId !== activeEpisodeSession.id || activeEpisodeSession.isCancelled) break;
             const v = document.querySelector('video');
             if (!v) break;
             const actualTime = v.currentTime;
@@ -591,6 +669,7 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
             const promises = chunks.map(chunk => requestBatch(chunk));
 
             await Promise.all(promises);
+            if (currentSessionId !== activeEpisodeSession.id || activeEpisodeSession.isCancelled) break;
             await new Promise(r => setTimeout(r, 1000));
         }
 
@@ -598,6 +677,7 @@ function setupContainerAndListen(video, playerContainer, parsedSubs, useAI, sett
     };
 
     video._dualSubListener = () => {
+        if (currentSessionId !== activeEpisodeSession.id || activeEpisodeSession.isCancelled) return;
         if (settings.secondLang === "none") return;
         const currentTime = video.currentTime;
 
